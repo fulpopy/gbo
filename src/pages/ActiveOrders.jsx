@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import { Header } from "../components";
 
 const ActiveOrders = () => {
   return (
-    <div>ActiveOrders</div>
-  )
-}
+    <>
+      <Header />
+    </>
+  );
+};
 
-export default ActiveOrders
+export default ActiveOrders;
