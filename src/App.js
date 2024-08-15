@@ -1,9 +1,9 @@
-import { ActiveOrders } from "./pages";
+import { Orders } from "./pages";
 
 function App() {
   return (
     <div>
-      <ActiveOrders />
+      <Orders />
     </div>
   );
 }

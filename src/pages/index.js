@@ -1,5 +1,5 @@
-import ActiveOrders from "./ActiveOrders";
+import Orders from "./Orders";
 import Login from "./History";
 import History from "./History";
 
-export { ActiveOrders, Login, History };
+export { Orders, Login, History };

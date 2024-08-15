@@ -11,12 +11,18 @@ import {
   Button,
   Tooltip,
   MenuItem,
+  styled,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AdbIcon from "@mui/icons-material/Adb";
+import logo from "../icons/logo.png";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
+
+const StyledLogo = styled("img")(`
+  width: 50px;  
+`);
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -41,7 +47,10 @@ function Header() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <StyledLogo
+            sx={{ display: { xs: "none", md: "flex" }, mr: 1, width: "50px" }}
+            src={logo}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -59,7 +68,6 @@ function Header() {
           >
             LOGO
           </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -96,7 +104,10 @@ function Header() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <StyledLogo
+            sx={{ display: { xs: "none", md: "flex" }, mr: 1, width: 50 }}
+            src={logo}
+          />
           <Typography
             variant="h5"
             noWrap
@@ -126,7 +137,6 @@ function Header() {
               </Button>
             ))}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
