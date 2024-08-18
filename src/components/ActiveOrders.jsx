@@ -1,11 +1,11 @@
 import { Box, Typography, styled } from "@mui/material";
-import OrderBanner from "./OrderBanner";
-import ActiveOrderHeader from "./ActiveOrderHeader";
+import OrderTable from "./OrderTable";
+import { orders } from "../constants/order";
 
 const Container = styled(Box)`
   margin: 15px 15px 0 15px;
   box-shadow: blue;
-  border: 1px solid;
+  border: 1px solid #d1d1d1;
   border-radius: 5px;
 `;
 
@@ -16,10 +16,14 @@ const ContainerText = styled(Typography)`
 
 const ActiveOrders = () => {
   return (
-    <Container>
+    <Container
+      sx={{
+        boxShadow: "0px 0px 10px 0px #d1d1d1",
+      }}
+    >
       <Box
         style={{
-          borderBottom: "1px solid",
+          borderBottom: "2px solid #d1d1d1",
           display: "flex",
           justifyContent: "left",
           alignItems: "center",
@@ -28,26 +32,7 @@ const ActiveOrders = () => {
       >
         <ContainerText>Active Orders</ContainerText>
       </Box>
-      <ActiveOrderHeader />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
-      <OrderBanner />
+      <OrderTable orders={orders} active={true} />
     </Container>
   );
 };

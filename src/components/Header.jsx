@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import {
   AppBar,
   Box,
@@ -11,22 +11,16 @@ import {
   Button,
   Tooltip,
   MenuItem,
-  styled,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import AdbIcon from "@mui/icons-material/Adb";
 import logo from "../icons/logo.png";
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
-
-const StyledLogo = styled("img")(`
-  width: 50px;  
-`);
+const pages = ["Active", "History"];
+const settings = ["Add Karigar", "Account", "Logout"];
 
 function Header() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -47,10 +41,17 @@ function Header() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <StyledLogo
-            sx={{ display: { xs: "none", md: "flex" }, mr: 1, width: "50px" }}
+          <Box
+            component="img"
             src={logo}
+            alt="LOGO"
+            sx={{
+              display: { xs: "none", md: "flex" },
+              mr: 1,
+              width: { md: "50px" },
+            }}
           />
+
           <Typography
             variant="h6"
             noWrap
@@ -66,8 +67,9 @@ function Header() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            GBO
           </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -104,9 +106,15 @@ function Header() {
               ))}
             </Menu>
           </Box>
-          <StyledLogo
-            sx={{ display: { xs: "none", md: "flex" }, mr: 1, width: 50 }}
+          <Box
+            component="img"
             src={logo}
+            alt="LOGO"
+            sx={{
+              display: { xs: "flex", md: "none" },
+              mr: 1,
+              width: { xs: "50px" },
+            }}
           />
           <Typography
             variant="h5"
@@ -124,7 +132,7 @@ function Header() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            GBO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
@@ -137,6 +145,7 @@ function Header() {
               </Button>
             ))}
           </Box>
+
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
