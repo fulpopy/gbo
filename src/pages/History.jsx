@@ -1,7 +1,13 @@
 import React from "react";
+import { Header, CompleatedOrderes } from "../components";
 
 const History = () => {
-  return <div>History</div>;
+  return (
+    <>
+      <Header />
+      <CompleatedOrderes />
+    </>
+  );
 };
 
 export default History;

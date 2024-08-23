@@ -95,7 +95,13 @@ const OrderTable = ({ orders, active }) => {
               <TableCell>{row.end_date}</TableCell>
               <TableCell>{row.karigar}</TableCell>
               <TableCell>
-                <Tooltip title="Once the status is changed, you will find the order in the history tab.">
+                <Tooltip
+                  title={
+                    active
+                      ? "Once the status is changed, you will find the order in the history tab."
+                      : "Once the status is changed, you will find the order in the Active tab."
+                  }
+                >
                   <Button
                     variant="outlined"
                     color="success"
@@ -122,10 +128,17 @@ const OrderTable = ({ orders, active }) => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Are you sure you want to change the status?</DialogTitle>
         <DialogContent>
-          <Typography>
-            Once the status is changed, you will find the order in the history
-            tab.
-          </Typography>
+          {active ? (
+            <Typography>
+              Once the status is changed, you will find the order in the history
+              tab.
+            </Typography>
+          ) : (
+            <Typography>
+              Once the status is changed, you will find the order in the active
+              tab.
+            </Typography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

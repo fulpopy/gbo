@@ -1,4 +1,5 @@
 import Header from "./Header";
 import ActiveOrders from "./ActiveOrders";
+import CompleatedOrderes from "./CompleatedOrderes";
 
-export { Header, ActiveOrders };
+export { Header, ActiveOrders, CompleatedOrderes };
