@@ -6,7 +6,7 @@ const Login = () => {
 
   const handleLogin = () => {
     localStorage.setItem("auth", true);
-    navigate("/orders");
+    navigate("/home");
   };
 
   return (

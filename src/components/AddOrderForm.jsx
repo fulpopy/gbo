@@ -80,23 +80,30 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: { xs: 300, md: 600 },
-          maxHeight: "85vh",
+          maxHeight: "90vh",
           bgcolor: "background.paper",
-          border: "2px solid #000",
           boxShadow: 24,
           p: 4,
           overflowY: "auto",
         }}
       >
-        {/* Close Icon */}
         <IconButton
-          sx={{ position: "absolute", top: 8, right: 8, color: "blue" }}
+          sx={{ position: "absolute", top: 8, right: 8 }}
           onClick={handleClose}
         >
           <CloseIcon />
         </IconButton>
 
-        <Typography variant="h6" component="h2" gutterBottom>
+        <Typography
+          variant="h6"
+          component="h2"
+          gutterBottom
+          sx={{
+            textAlign: "center",
+            marginBottom: 2,
+            borderBottom: "2px solid #d1d1d1",
+          }}
+        >
           Add New Order
         </Typography>
         <form>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -16,13 +16,17 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../icons/logo.png";
 import AddOrderForm from "./AddOrderForm";
+import KarigarList from "./KarigarList";
 
-const pages = ["orders", "history"];
+const pages = ["home", "orders", "history"];
 const settings = ["Account", "Logout"];
 
 function Header() {
+  const location = useLocation();
+  const currentPage = location.pathname.split("/")[1];
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openKarigarModal, setOpenKarigarModal] = useState(false);
   const [orders, setOrders] = useState([]);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -36,7 +40,13 @@ function Header() {
     setOrders([...orders, newOrder]);
   };
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    console.log("clicked");
+    setOpen(true);
+  };
+
+  const handleOpenKarigarModal = () => setOpenKarigarModal(true);
+  const handleCloseKarigarModal = () => setOpenKarigarModal(false);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -119,6 +129,21 @@ function Header() {
                   display: { xs: "block", md: "none" },
                 }}
               >
+                {pages.map((page) => (
+                  <MenuItem key={page}>
+                    <Typography
+                      sx={{
+                        textTransform: "uppercase",
+                        borderBottom:
+                          currentPage === page ? "1px solid black" : "0px",
+                      }}
+                      textAlign="center"
+                      onClick={() => handleNavigate(page)}
+                    >
+                      {page}
+                    </Typography>
+                  </MenuItem>
+                ))}
                 <MenuItem>
                   <Typography
                     textAlign="center"
@@ -132,22 +157,11 @@ function Header() {
                   <Typography
                     textAlign="center"
                     sx={{ textTransform: "uppercase" }}
-                    onClick={handleOpen}
+                    onClick={handleOpenKarigarModal}
                   >
-                    Add Karigar
+                    Karigars
                   </Typography>
                 </MenuItem>
-                {pages.map((page) => (
-                  <MenuItem key={page}>
-                    <Typography
-                      sx={{ textTransform: "uppercase" }}
-                      textAlign="center"
-                      onClick={() => handleNavigate(page)}
-                    >
-                      {page}
-                    </Typography>
-                  </MenuItem>
-                ))}
               </Menu>
             </Box>
             <Box
@@ -178,6 +192,21 @@ function Header() {
               GBO
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {pages.map((page) => (
+                <Button
+                  key={page}
+                  onClick={() => handleNavigate(page)}
+                  sx={{
+                    my: 2,
+                    color: "white",
+                    display: "block",
+                    boxShadow:
+                      currentPage === page ? "0px 0px 5px 0px" : "none",
+                  }}
+                >
+                  {page}
+                </Button>
+              ))}
               <Button
                 sx={{ my: 2, color: "white", display: "block" }}
                 onClick={handleOpen}
@@ -186,19 +215,10 @@ function Header() {
               </Button>
               <Button
                 sx={{ my: 2, color: "white", display: "block" }}
-                onClick={handleOpen}
+                onClick={handleOpenKarigarModal}
               >
-                ADD KARIGAR
+                KARIGARS
               </Button>
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={() => handleNavigate(page)}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  {page}
-                </Button>
-              ))}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
@@ -236,8 +256,14 @@ function Header() {
           </Toolbar>
         </Container>
       </AppBar>
+
       <AddOrderForm onAddOrder={handleAddOrder} open={open} setOpen={setOpen} />
+      <KarigarList
+        openKarigarModal={openKarigarModal}
+        setOpenKarigarModal={setOpenKarigarModal}
+      />
     </>
   );
 }
+
 export default Header;
