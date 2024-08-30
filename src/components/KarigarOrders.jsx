@@ -41,7 +41,6 @@ const KarigarOrders = () => {
                   position: "sticky",
                   left: 0,
                   zIndex: 1,
-                  minWidth: "100px",
                 }}
               >
                 <strong>Karigar Name</strong>
