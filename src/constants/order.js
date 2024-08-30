@@ -26,13 +26,13 @@ export const orders = [
   {
     ID: 3,
     client: "Client 3",
-    karat: "24K",
+    karat: "20K",
     weight: "20g",
     image: "https://example.com/image3.jpg",
     description: "Description for order 3",
     date_placed: "2024-08-03",
     end_date: "2024-08-03",
-    karigar: "Karigar C",
+    karigar: "Karigar A",
     status: "Active",
   },
   {
@@ -44,7 +44,7 @@ export const orders = [
     description: "Description for order 4",
     date_placed: "2024-08-04",
     end_date: "2024-08-04",
-    karigar: "Karigar D",
+    karigar: "Karigar A",
     status: "Completed",
   },
   {
@@ -56,7 +56,7 @@ export const orders = [
     description: "Description for order 5",
     date_placed: "2024-08-05",
     end_date: "2024-08-05",
-    karigar: "Karigar E",
+    karigar: "Karigar D",
     status: "Active",
   },
   {
@@ -68,7 +68,7 @@ export const orders = [
     description: "Description for order 6",
     date_placed: "2024-08-06",
     end_date: "2024-08-06",
-    karigar: "Karigar F",
+    karigar: "Karigar Y",
     status: "Completed",
   },
   {
@@ -80,7 +80,7 @@ export const orders = [
     description: "Description for order 7",
     date_placed: "2024-08-07",
     end_date: "2024-08-07",
-    karigar: "Karigar G",
+    karigar: "Karigar U",
     status: "Active",
   },
   {
@@ -92,7 +92,7 @@ export const orders = [
     description: "Description for order 8",
     date_placed: "2024-08-08",
     end_date: "2024-08-08",
-    karigar: "Karigar H",
+    karigar: "Karigar Y",
     status: "Active",
   },
   {
@@ -104,7 +104,7 @@ export const orders = [
     description: "Description for order 9",
     date_placed: "2024-08-09",
     end_date: "2024-08-09",
-    karigar: "Karigar I",
+    karigar: "Karigar Y",
     status: "Completed",
   },
   {
@@ -116,7 +116,7 @@ export const orders = [
     description: "Description for order 10",
     date_placed: "2024-08-10",
     end_date: "2024-08-10",
-    karigar: "Karigar J",
+    karigar: "Karigar H",
     status: "Completed",
   },
   {
@@ -128,7 +128,7 @@ export const orders = [
     description: "Description for order 11",
     date_placed: "2024-08-11",
     end_date: "2024-08-11",
-    karigar: "Karigar K",
+    karigar: "Karigar N",
     status: "Active",
   },
   {
@@ -224,7 +224,7 @@ export const orders = [
     description: "Description for order 19",
     date_placed: "2024-08-19",
     end_date: "2024-08-19",
-    karigar: "Karigar S",
+    karigar: "Karigar A",
     status: "Active",
   },
   {
@@ -236,7 +236,7 @@ export const orders = [
     description: "Description for order 20",
     date_placed: "2024-08-20",
     end_date: "2024-08-20",
-    karigar: "Karigar T",
+    karigar: "Karigar B",
     status: "Completed",
   },
 ];
