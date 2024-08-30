@@ -11,14 +11,9 @@ import {
   TableRow,
   Card,
   CardContent,
-  Modal,
-  Button,
-  IconButton,
 } from "@mui/material";
 import { orders } from "../constants/order";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Close } from "@mui/icons-material";
+import OrderModal from "./OrderModal";
 
 const KarigarOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -28,22 +23,9 @@ const KarigarOrders = () => {
     setSelectedOrder(order);
     setModalOpen(true);
   };
-
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedOrder(null);
-  };
-
-  const handleEdit = () => {
-    // Handle edit functionality
-    console.log("Edit", selectedOrder);
-    handleCloseModal();
-  };
-
-  const handleDelete = () => {
-    // Handle delete functionality
-    console.log("Delete", selectedOrder);
-    handleCloseModal();
   };
 
   const groupedOrders = orders.reduce((acc, order) => {
@@ -152,76 +134,11 @@ const KarigarOrders = () => {
         </Table>
       </TableContainer>
 
-      {/* Modal for Order Details */}
-      <Modal
-        open={modalOpen}
-        onClose={handleCloseModal}
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: { xs: 300, md: 600 },
-            maxHeight: "90vh",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            overflowY: "auto",
-          }}
-        >
-          <IconButton
-            sx={{ position: "absolute", top: 8, right: 8 }}
-            onClick={handleCloseModal}
-          >
-            <Close />
-          </IconButton>
-          {selectedOrder && (
-            <>
-              <Typography variant="h6" component="div" gutterBottom>
-                {`Order#${selectedOrder.ID}`}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Client:</strong> {selectedOrder.client}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Karat:</strong> {selectedOrder.karat}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Weight:</strong> {selectedOrder.weight}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Status:</strong> {selectedOrder.status}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Date Placed:</strong> {selectedOrder.date_placed}
-              </Typography>
-              <Typography variant="body1">
-                <strong>End Date:</strong> {selectedOrder.end_date}
-              </Typography>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mr: 1 }}
-                  onClick={handleEdit}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </Button>
-              </Box>
-            </>
-          )}
-        </Box>
-      </Modal>
+      <OrderModal
+        modalOpen={modalOpen}
+        order={selectedOrder}
+        handleCloseModal={handleCloseModal}
+      />
     </Box>
   );
 };

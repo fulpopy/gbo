@@ -261,6 +261,7 @@ function Header() {
       <KarigarList
         openKarigarModal={openKarigarModal}
         setOpenKarigarModal={setOpenKarigarModal}
+        handleCloseKarigarModal={handleCloseKarigarModal}
       />
     </>
   );

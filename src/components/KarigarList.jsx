@@ -33,8 +33,11 @@ const karigars = [
   { name: "Karigar J", description: "Simple ring designer" },
 ];
 
-const KarigarList = ({ openKarigarModal, setOpenKarigarModal }) => {
-  const handleCloseKarigarModal = () => setOpenKarigarModal(false);
+const KarigarList = ({
+  openKarigarModal,
+  setOpenKarigarModal,
+  handleCloseKarigarModal,
+}) => {
   return (
     <Modal
       open={openKarigarModal}
@@ -52,7 +55,7 @@ const KarigarList = ({ openKarigarModal, setOpenKarigarModal }) => {
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
-          maxHeight: "90vh",
+          maxHeight: "85vh",
           outline: "none",
           overflowY: "auto",
         }}

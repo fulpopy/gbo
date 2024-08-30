@@ -80,7 +80,7 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: { xs: 300, md: 600 },
-          maxHeight: "90vh",
+          maxHeight: "85vh",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
