@@ -11,46 +11,51 @@ import Orders from "./pages/Orders";
 import History from "./pages/History";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
+import { OrderProvider, KarigarProvider } from "./context";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <Orders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/history"
-          element={
-            <ProtectedRoute>
-              <History />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <ProtectedRoute>
-              <Navigate to="/orders" />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
+    <OrderProvider>
+      <KarigarProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <Orders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/history"
+              element={
+                <ProtectedRoute>
+                  <History />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <ProtectedRoute>
+                  <Navigate to="/orders" />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </KarigarProvider>
+    </OrderProvider>
   );
 }
 

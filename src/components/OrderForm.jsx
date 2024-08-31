@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
   Modal,
@@ -17,19 +17,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-
-const karigarList = [
-  { name: "Karigar A", description: "Expert in intricate designs" },
-  { name: "Karigar B", description: "Specializes in gold rings" },
-  { name: "Karigar C", description: "Known for traditional patterns" },
-  { name: "Karigar D", description: "Jeweler with gemstone expertise" },
-  { name: "Karigar E", description: "Minimalist and modern designs" },
-  { name: "Karigar F", description: "Floral patterns and pendants" },
-  { name: "Karigar G", description: "Heavy chains and bold designs" },
-  { name: "Karigar H", description: "Delicate charms and anklets" },
-  { name: "Karigar I", description: "Traditional gold belts" },
-  { name: "Karigar J", description: "Simple and sleek finishes" },
-];
+import { KarigarContext } from "../context";
 
 const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
   const initialOrderData = {
@@ -45,7 +33,7 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
     status: "active",
     customKarat: "",
   };
-
+  const { karigars } = useContext(KarigarContext);
   const [orderData, setOrderData] = useState(initialOrderData);
 
   // Helper function to format date to yyyy-mm-dd
@@ -56,7 +44,7 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
 
   useEffect(() => {
     if (order) {
-      console.log(order);
+      // console.log(order);
       setOrderData({
         ...order,
         datePlaced: order.datePlaced
@@ -67,7 +55,10 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
     }
   }, [order]);
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOrderData(initialOrderData);
+    setOpen(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,7 +78,6 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
     };
     console.log(updatedOrder);
     onAddOrder(updatedOrder);
-    setOrderData(initialOrderData);
     handleClose();
   };
 
@@ -236,11 +226,15 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
                   value={orderData.karigar}
                   onChange={handleChange}
                 >
-                  {karigarList.map((karigar) => (
-                    <MenuItem key={karigar.name} value={karigar.name}>
-                      {karigar.name}
-                    </MenuItem>
-                  ))}
+                  {karigars &&
+                    Object.keys(karigars).map((karigarId) => {
+                      const karigar = karigars[karigarId];
+                      return (
+                        <MenuItem key={karigar.name} value={karigar.name}>
+                          {karigar.name}
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             </Grid>
