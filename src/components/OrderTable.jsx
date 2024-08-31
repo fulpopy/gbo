@@ -61,7 +61,7 @@ const OrderTable = ({ orders, active }) => {
   return (
     <>
       <TableContainer component={Paper}>
-        <Table>
+        <Table sx={{ whiteSpace: "nowrap" }}>
           <TableHead
             sx={{
               "& th": {
@@ -72,16 +72,16 @@ const OrderTable = ({ orders, active }) => {
             }}
           >
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Client</TableCell>
-              <TableCell>Karat</TableCell>
-              <TableCell>Weight</TableCell>
-              <TableCell>Image</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Date Placed</TableCell>
-              <TableCell>End Date</TableCell>
-              <TableCell>Karigar</TableCell>
-              <TableCell>Change Status</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>ID</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Client</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Karat</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Weight</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Image</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Description</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Date Placed</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>End Date</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Karigar</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Change Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -98,25 +98,40 @@ const OrderTable = ({ orders, active }) => {
                     cursor: "pointer",
                     textDecoration: "underline",
                     color: "blue",
+                    textAlign: "center",
                   }}
                 >
                   {order.ID}
                 </TableCell>
-                <TableCell>{order.client}</TableCell>
-                <TableCell>{order.karat}</TableCell>
-                <TableCell>{order.weight}</TableCell>
-                <TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
+                  {order.client}
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
+                  {order.karat}
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
+                  {order.weight}
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
                   <img
                     src={order.image}
                     alt="Order"
                     style={{ width: "100px", height: "auto" }}
                   />
                 </TableCell>
-                <TableCell>{order.description}</TableCell>
-                <TableCell>{order.datePlaced}</TableCell>
-                <TableCell>{order.endDate}</TableCell>
-                <TableCell>{order.karigar}</TableCell>
-                <TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
+                  {order.description}
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
+                  {order.datePlaced}
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
+                  {order.endDate}
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
+                  {order.karigar}
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
                   <Tooltip
                     title={
                       active

@@ -1,6 +1,6 @@
 export const orders = [
   {
-    ID: 1,
+    ID: 1725141557924,
     client: "Client 1",
     karat: "22K",
     weight: "15g",
@@ -12,7 +12,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 2,
+    ID: 1725141557931,
     client: "Client 2",
     karat: "18K",
     weight: "10g",
@@ -24,7 +24,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 3,
+    ID: 1725141558924,
     client: "Client 3",
     karat: "20K",
     weight: "20g",
@@ -36,7 +36,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 4,
+    ID: 1725141558931,
     client: "Client 4",
     karat: "22K",
     weight: "12g",
@@ -48,7 +48,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 5,
+    ID: 1725141559925,
     client: "Client 5",
     karat: "18K",
     weight: "8g",
@@ -60,7 +60,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 6,
+    ID: 1725141559931,
     client: "Client 6",
     karat: "22K",
     weight: "18g",
@@ -72,7 +72,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 7,
+    ID: 1725141560927,
     client: "Client 7",
     karat: "24K",
     weight: "25g",
@@ -84,7 +84,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 8,
+    ID: 1725141560931,
     client: "Client 8",
     karat: "18K",
     weight: "14g",
@@ -96,7 +96,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 9,
+    ID: 1725141561927,
     client: "Client 9",
     karat: "22K",
     weight: "30g",
@@ -108,7 +108,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 10,
+    ID: 1725141561931,
     client: "Client 10",
     karat: "24K",
     weight: "5g",
@@ -120,7 +120,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 11,
+    ID: 1725141562929,
     client: "Client 11",
     karat: "22K",
     weight: "15g",
@@ -132,7 +132,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 12,
+    ID: 1725141562931,
     client: "Client 12",
     karat: "18K",
     weight: "10g",
@@ -144,7 +144,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 13,
+    ID: 1725141563931,
     client: "Client 13",
     karat: "24K",
     weight: "20g",
@@ -156,7 +156,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 14,
+    ID: 1725141563932,
     client: "Client 14",
     karat: "22K",
     weight: "12g",
@@ -168,7 +168,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 15,
+    ID: 1725141564931,
     client: "Client 15",
     karat: "18K",
     weight: "8g",
@@ -180,7 +180,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 16,
+    ID: 1725141564932,
     client: "Client 16",
     karat: "22K",
     weight: "18g",
@@ -192,7 +192,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 17,
+    ID: 1725141565933,
     client: "Client 17",
     karat: "24K",
     weight: "25g",
@@ -204,7 +204,7 @@ export const orders = [
     status: "Completed",
   },
   {
-    ID: 18,
+    ID: 1725141565933,
     client: "Client 18",
     karat: "18K",
     weight: "14g",
@@ -216,7 +216,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 19,
+    ID: 1725141566934,
     client: "Client 19",
     karat: "22K",
     weight: "30g",
@@ -228,7 +228,7 @@ export const orders = [
     status: "Active",
   },
   {
-    ID: 20,
+    ID: 1725141566934,
     client: "Client 20",
     karat: "24K",
     weight: "5g",
@@ -242,7 +242,7 @@ export const orders = [
 ];
 
 export const tempOrders = {
-  1: {
+  1725141557924: {
     client: "Client 1",
     karat: "22K",
     weight: "15g",
@@ -253,7 +253,7 @@ export const tempOrders = {
     karigar: "Karigar A",
     status: "Completed",
   },
-  2: {
+  1725141557931: {
     client: "Client 2",
     karat: "18K",
     weight: "10g",
@@ -264,7 +264,7 @@ export const tempOrders = {
     karigar: "Karigar B",
     status: "Active",
   },
-  3: {
+  1725141558924: {
     client: "Client 3",
     karat: "20K",
     weight: "20g",
@@ -275,7 +275,7 @@ export const tempOrders = {
     karigar: "Karigar A",
     status: "Active",
   },
-  4: {
+  1725141558931: {
     client: "Client 4",
     karat: "22K",
     weight: "12g",
@@ -286,7 +286,7 @@ export const tempOrders = {
     karigar: "Karigar A",
     status: "Completed",
   },
-  5: {
+  1725141559925: {
     client: "Client 5",
     karat: "18K",
     weight: "8g",
@@ -297,7 +297,7 @@ export const tempOrders = {
     karigar: "Karigar D",
     status: "Active",
   },
-  6: {
+  1725141559931: {
     client: "Client 6",
     karat: "22K",
     weight: "18g",
@@ -308,7 +308,7 @@ export const tempOrders = {
     karigar: "Karigar Y",
     status: "Completed",
   },
-  7: {
+  1725141560927: {
     client: "Client 7",
     karat: "24K",
     weight: "25g",
@@ -319,7 +319,7 @@ export const tempOrders = {
     karigar: "Karigar U",
     status: "Active",
   },
-  8: {
+  1725141560931: {
     client: "Client 8",
     karat: "18K",
     weight: "14g",
@@ -330,7 +330,7 @@ export const tempOrders = {
     karigar: "Karigar Y",
     status: "Active",
   },
-  9: {
+  1725141561927: {
     client: "Client 9",
     karat: "22K",
     weight: "30g",
@@ -341,7 +341,7 @@ export const tempOrders = {
     karigar: "Karigar Y",
     status: "Completed",
   },
-  10: {
+  1725141561931: {
     client: "Client 10",
     karat: "24K",
     weight: "5g",
@@ -352,7 +352,7 @@ export const tempOrders = {
     karigar: "Karigar H",
     status: "Completed",
   },
-  11: {
+  1725141562929: {
     client: "Client 11",
     karat: "22K",
     weight: "15g",
@@ -363,7 +363,7 @@ export const tempOrders = {
     karigar: "Karigar N",
     status: "Active",
   },
-  12: {
+  1725141562931: {
     client: "Client 12",
     karat: "18K",
     weight: "10g",
@@ -374,7 +374,7 @@ export const tempOrders = {
     karigar: "Karigar L",
     status: "Completed",
   },
-  13: {
+  1725141563931: {
     client: "Client 13",
     karat: "24K",
     weight: "20g",
@@ -385,7 +385,7 @@ export const tempOrders = {
     karigar: "Karigar M",
     status: "Active",
   },
-  14: {
+  1725141563932: {
     client: "Client 14",
     karat: "22K",
     weight: "12g",
@@ -396,7 +396,7 @@ export const tempOrders = {
     karigar: "Karigar N",
     status: "Active",
   },
-  15: {
+  1725141564931: {
     client: "Client 15",
     karat: "18K",
     weight: "8g",
@@ -407,7 +407,7 @@ export const tempOrders = {
     karigar: "Karigar O",
     status: "Completed",
   },
-  16: {
+  1725141564932: {
     client: "Client 16",
     karat: "22K",
     weight: "18g",
@@ -418,7 +418,7 @@ export const tempOrders = {
     karigar: "Karigar P",
     status: "Completed",
   },
-  17: {
+  1725141565933: {
     client: "Client 17",
     karat: "24K",
     weight: "25g",
@@ -429,7 +429,7 @@ export const tempOrders = {
     karigar: "Karigar Q",
     status: "Completed",
   },
-  18: {
+  1725141565933: {
     client: "Client 18",
     karat: "18K",
     weight: "14g",
@@ -440,7 +440,7 @@ export const tempOrders = {
     karigar: "Karigar R",
     status: "Active",
   },
-  19: {
+  1725141566934: {
     client: "Client 19",
     karat: "22K",
     weight: "30g",
@@ -451,7 +451,7 @@ export const tempOrders = {
     karigar: "Karigar A",
     status: "Active",
   },
-  20: {
+  1725141566934: {
     client: "Client 20",
     karat: "24K",
     weight: "5g",
