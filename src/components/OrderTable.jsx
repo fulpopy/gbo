@@ -113,8 +113,8 @@ const OrderTable = ({ orders, active }) => {
                   />
                 </TableCell>
                 <TableCell>{order.description}</TableCell>
-                <TableCell>{order.date_placed}</TableCell>
-                <TableCell>{order.end_date}</TableCell>
+                <TableCell>{order.datePlaced}</TableCell>
+                <TableCell>{order.endDate}</TableCell>
                 <TableCell>{order.karigar}</TableCell>
                 <TableCell>
                   <Tooltip

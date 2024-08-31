@@ -117,10 +117,10 @@ const KarigarOrders = () => {
                               Weight: {order.weight}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              Date Placed: {order.date_placed}
+                              Date Placed: {order.datePlaced}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              End Date: {order.end_date}
+                              End Date: {order.endDate}
                             </Typography>
                           </CardContent>
                         </Card>

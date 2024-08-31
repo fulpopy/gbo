@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../icons/logo.png";
-import AddOrderForm from "./AddOrderForm";
+import OrderForm from "./OrderForm";
 import KarigarList from "./KarigarList";
 
 const pages = ["home", "orders", "history"];
@@ -257,7 +257,7 @@ function Header() {
         </Container>
       </AppBar>
 
-      <AddOrderForm onAddOrder={handleAddOrder} open={open} setOpen={setOpen} />
+      <OrderForm onAddOrder={handleAddOrder} open={open} setOpen={setOpen} />
       <KarigarList
         openKarigarModal={openKarigarModal}
         setOpenKarigarModal={setOpenKarigarModal}

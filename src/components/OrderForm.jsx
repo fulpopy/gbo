@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Modal,
@@ -31,7 +31,7 @@ const karigarList = [
   { name: "Karigar J", description: "Simple and sleek finishes" },
 ];
 
-const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
+const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
   const initialOrderData = {
     client: "",
     karat: "18k",
@@ -45,7 +45,27 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
     status: "active",
     customKarat: "",
   };
+
   const [orderData, setOrderData] = useState(initialOrderData);
+
+  // Helper function to format date to yyyy-mm-dd
+  const formatDateForInput = (date) => {
+    const [day, month, year] = date.split("-");
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    if (order) {
+      console.log(order);
+      setOrderData({
+        ...order,
+        datePlaced: order.datePlaced
+          ? formatDateForInput(order.datePlaced)
+          : "",
+        endDate: order.endDate ? formatDateForInput(order.endDate) : "",
+      });
+    }
+  }, [order]);
 
   const handleClose = () => setOpen(false);
 
@@ -58,15 +78,15 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
     setOrderData({ ...orderData, image: e.target.files[0] });
   };
 
-  const handleCreateOrder = () => {
-    const newOrder = {
-      ID: Date.now(),
+  const handleCreateOrUpdateOrder = () => {
+    const updatedOrder = {
+      ID: order ? order.ID : Date.now(),
       ...orderData,
       karat:
         orderData.karat === "other" ? orderData.customKarat : orderData.karat,
     };
-    console.log(newOrder);
-    onAddOrder(newOrder);
+    console.log(updatedOrder);
+    onAddOrder(updatedOrder);
     setOrderData(initialOrderData);
     handleClose();
   };
@@ -104,11 +124,10 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
             borderBottom: "2px solid #d1d1d1",
           }}
         >
-          Add New Order
+          {order ? "Edit Order" : "Add New Order"}
         </Typography>
         <form>
           <Grid container spacing={2}>
-            {/* Your form fields here */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -127,9 +146,9 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
                   value={orderData.karat}
                   onChange={handleChange}
                 >
-                  <MenuItem value="18k">18K</MenuItem>
-                  <MenuItem value="20k">20K</MenuItem>
-                  <MenuItem value="22k">22K</MenuItem>
+                  <MenuItem value="18K">18K</MenuItem>
+                  <MenuItem value="20K">20K</MenuItem>
+                  <MenuItem value="22K">22K</MenuItem>
                   <MenuItem value="other">Other</MenuItem>
                 </Select>
               </FormControl>
@@ -234,12 +253,12 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
                   onChange={handleChange}
                 >
                   <FormControlLabel
-                    value="active"
+                    value="Active"
                     control={<Radio />}
                     label="Active"
                   />
                   <FormControlLabel
-                    value="completed"
+                    value="Completed"
                     control={<Radio />}
                     label="Completed"
                   />
@@ -251,9 +270,9 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleCreateOrder}
+              onClick={handleCreateOrUpdateOrder}
             >
-              Create
+              {order ? "Edit Order" : "Create Order"}
             </Button>
           </Box>
         </form>
@@ -262,4 +281,4 @@ const AddOrderForm = ({ onAddOrder, open, setOpen }) => {
   );
 };
 
-export default AddOrderForm;
+export default OrderForm;
