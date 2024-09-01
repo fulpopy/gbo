@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -13,11 +13,15 @@ import {
   CardContent,
 } from "@mui/material";
 import { ordersList } from "../constants/order";
+import { OrderContext, KarigarContext } from "../context";
 import OrderModal from "./OrderModal";
 
 const KarigarOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const { orders } = useContext(OrderContext);
+  const { karigars } = useContext(KarigarContext);
+  const [groupedOrders, setGroupOrderes] = useState({});
 
   const handleCardClick = (order) => {
     setSelectedOrder(order);
@@ -28,13 +32,21 @@ const KarigarOrders = () => {
     setSelectedOrder(null);
   };
 
-  const groupedOrders = ordersList.reduce((acc, order) => {
-    if (!acc[order.karigar]) {
-      acc[order.karigar] = [];
-    }
-    if (order.status === "Active") acc[order.karigar].push(order);
-    return acc;
-  }, {});
+  useEffect(() => {
+    console.log("useEffectCalled");
+
+    const currOrders = orders.reduce((acc, order) => {
+      const karigar = karigars.find((k) => k.id === order.karigar);
+      const name = karigar ? karigar.name : "Unknown Karigar";
+      if (!acc[name]) {
+        acc[name] = [];
+      }
+      if (order.status === "Active") acc[name].push(order);
+      return acc;
+    }, {});
+    // console.log(currOrders);
+    setGroupOrderes(currOrders);
+  }, [orders, karigars]);
 
   return (
     <Box p={2}>
@@ -117,10 +129,10 @@ const KarigarOrders = () => {
                               Weight: {order.weight}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              Date Placed: {order.date_placed}
+                              Date Placed: {order.datePlaced}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              End Date: {order.end_date}
+                              End Date: {order.endDate}
                             </Typography>
                           </CardContent>
                         </Card>
@@ -138,6 +150,7 @@ const KarigarOrders = () => {
         modalOpen={modalOpen}
         order={selectedOrder}
         handleCloseModal={handleCloseModal}
+        setOrder={setSelectedOrder}
       />
     </Box>
   );

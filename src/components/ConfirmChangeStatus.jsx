@@ -19,19 +19,12 @@ const ConfirmChangeStatus = ({
 }) => {
   const { updateOrder } = useContext(OrderContext);
   const handleConfirmChange = () => {
-    let currOrder;
-    if (active) {
-      currOrder = {
-        ...selectedOrder,
-        status: "Completed",
-      };
-    } else
-      currOrder = {
-        ...selectedOrder,
-        status: "Active",
-      };
+    const currOrder = {
+      ...selectedOrder,
+      status: selectedOrder.status === "Active" ? "Completed" : "Active",
+    };
     setSelectedOrder(currOrder);
-    console.log(currOrder);
+    // console.log(currOrder);
     updateOrder(selectedOrder.id, currOrder);
     handleCloseModal();
     handleClose();
