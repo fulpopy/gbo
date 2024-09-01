@@ -16,20 +16,23 @@ const KarigarForm = ({ openKarigarForm, handleCloseKarigarForm, karigar }) => {
     description: "",
     tasks: [],
   };
-  const { setKarigars } = useContext(KarigarContext);
+
+  const { updateKarigar, addKarigar } = useContext(KarigarContext);
   const [karigarData, setKarigarData] = useState(initialKarigarData);
+  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     if (karigar) {
-      setKarigarData({
-        name: karigar.name,
-        description: karigar.description,
-        tasks: karigar.tasks,
-      });
-    } else {
-      setKarigarData(initialKarigarData);
+      setKarigarData(karigar);
     }
   }, [karigar]);
+
+  useEffect(() => {
+    // Check if all required fields are filled
+    const isFormValid = karigarData.name && karigarData.description;
+
+    setIsValid(isFormValid);
+  }, [karigarData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,22 +40,21 @@ const KarigarForm = ({ openKarigarForm, handleCloseKarigarForm, karigar }) => {
   };
 
   const handleCreateOrUpdateKarigar = () => {
-    if (!karigarData.name || !karigarData.description) {
-      alert("Please fill in all required fields.");
-      return;
+    const currKarigar = {
+      id: karigar ? karigar.id : Date.now(),
+      ...karigarData,
+    };
+
+    if (karigar) {
+      updateKarigar(karigar.id, currKarigar);
+    } else {
+      addKarigar(currKarigar);
     }
 
-    const ID = karigar?.id || Date.now().toString();
-    const newKarigar = { [ID]: karigarData };
-
-    setKarigars((prevList) => ({
-      ...prevList,
-      ...newKarigar,
-    }));
-
     handleCloseKarigarForm();
-    setKarigarData(initialKarigarData); 
+    setKarigarData(initialKarigarData);
   };
+
   return (
     <Modal
       open={openKarigarForm}
@@ -111,14 +113,28 @@ const KarigarForm = ({ openKarigarForm, handleCloseKarigarForm, karigar }) => {
             margin="normal"
             required
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCreateOrUpdateKarigar}
-            sx={{ mt: 2 }}
+
+          <Box
+            mt={2}
+            display="flex"
+            justifyContent="flex-end"
+            flexDirection="column"
           >
-            {karigar ? "Update Karigar" : "Add Karigar"}
-          </Button>
+            {!isValid && (
+              <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+                Please fill all mandatory fields marked with *
+              </Typography>
+            )}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCreateOrUpdateKarigar}
+              sx={{ mt: 2 }}
+              disabled={!isValid}
+            >
+              {karigar ? "Update Karigar" : "Add Karigar"}
+            </Button>
+          </Box>
         </form>
       </Box>
     </Modal>

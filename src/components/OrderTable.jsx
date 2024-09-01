@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Typography,
   Table,
@@ -16,9 +16,14 @@ import {
   Tooltip,
 } from "@mui/material";
 import OrderModal from "./OrderModal";
+import { OrderContext, KarigarContext } from "../context";
 
-const OrderTable = ({ orders, active }) => {
+const OrderTable = ({ active }) => {
   const [currentOrders, setCurrentOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const { orders } = useContext(OrderContext);
+  const { karigars } = useContext(KarigarContext);
   useEffect(() => {
     let temp;
     if (active) {
@@ -27,20 +32,8 @@ const OrderTable = ({ orders, active }) => {
       temp = orders.filter((ele) => ele.status === "Completed");
     }
     setCurrentOrders(temp);
-  }, [currentOrders]);
-  const [open, setOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const handleClickOpen = (order) => {
-    setSelectedOrder(order);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedOrder(null);
-  };
+    // console.log(orders);
+  }, [orders]);
 
   const handleCardClick = (order) => {
     // console.log(order);
@@ -52,12 +45,6 @@ const OrderTable = ({ orders, active }) => {
     setSelectedOrder(null);
   };
 
-  const handleConfirmChange = () => {
-    selectedOrder.status =
-      selectedOrder.status === "Active" ? "Completed" : "Active";
-    console.log(`Status changed for order ID: ${selectedOrder}`);
-    handleClose();
-  };
   return (
     <>
       <TableContainer component={Paper}>
@@ -72,7 +59,7 @@ const OrderTable = ({ orders, active }) => {
             }}
           >
             <TableRow>
-              <TableCell sx={{ textAlign: "center" }}>ID</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>id</TableCell>
               <TableCell sx={{ textAlign: "center" }}>Client</TableCell>
               <TableCell sx={{ textAlign: "center" }}>Karat</TableCell>
               <TableCell sx={{ textAlign: "center" }}>Weight</TableCell>
@@ -81,13 +68,13 @@ const OrderTable = ({ orders, active }) => {
               <TableCell sx={{ textAlign: "center" }}>Date Placed</TableCell>
               <TableCell sx={{ textAlign: "center" }}>End Date</TableCell>
               <TableCell sx={{ textAlign: "center" }}>Karigar</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Change Status</TableCell>
+              {/* <TableCell sx={{ textAlign: "center" }}>Change Status</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
             {currentOrders.map((order, index) => (
               <TableRow
-                key={order.ID}
+                key={order.id}
                 sx={{
                   backgroundColor: index % 2 === 0 ? "#f5f5f5" : "#ffffff",
                 }}
@@ -101,7 +88,7 @@ const OrderTable = ({ orders, active }) => {
                     textAlign: "center",
                   }}
                 >
-                  {order.ID}
+                  {order.id}
                 </TableCell>
                 <TableCell sx={{ textAlign: "center" }}>
                   {order.client}
@@ -129,9 +116,14 @@ const OrderTable = ({ orders, active }) => {
                   {order.endDate}
                 </TableCell>
                 <TableCell sx={{ textAlign: "center" }}>
-                  {order.karigar}
+                  {karigars.map((karigar) => {
+                    if (karigar.id === order.karigar) {
+                      return karigar.name;
+                    }
+                    return "";
+                  })}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
+                {/* <TableCell sx={{ textAlign: "center" }}>
                   <Tooltip
                     title={
                       active
@@ -157,40 +149,18 @@ const OrderTable = ({ orders, active }) => {
                       Change Status
                     </Button>
                   </Tooltip>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
         </Table>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Are you sure you want to change the status?</DialogTitle>
-          <DialogContent>
-            {active ? (
-              <Typography>
-                Once the status is changed, you will find the order in the
-                history tab.
-              </Typography>
-            ) : (
-              <Typography>
-                Once the status is changed, you will find the order in the
-                active tab.
-              </Typography>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleConfirmChange} color="primary">
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
       </TableContainer>
       <OrderModal
         modalOpen={modalOpen}
         order={selectedOrder}
+        setOrder={setSelectedOrder}
         handleCloseModal={handleCloseModal}
+        active={active}
       />
     </>
   );

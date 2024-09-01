@@ -17,12 +17,14 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import { KarigarContext } from "../context";
+import { OrderContext, KarigarContext } from "../context";
+import { products } from "../constants/products";
 
-const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
+const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   const initialOrderData = {
     client: "",
-    karat: "18k",
+    karat: "18K",
+    product: "",
     weight: "",
     image: null,
     imageName: "",
@@ -30,30 +32,41 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
     datePlaced: "",
     endDate: "",
     karigar: "",
-    status: "active",
+    status: "Active",
     customKarat: "",
   };
-  const { karigars } = useContext(KarigarContext);
+
+  const { karigars, addTaskToKarigar, removeTaskFromKarigar } =
+    useContext(KarigarContext);
+  const { addOrder, updateOrder } = useContext(OrderContext);
+
   const [orderData, setOrderData] = useState(initialOrderData);
 
-  // Helper function to format date to yyyy-mm-dd
-  const formatDateForInput = (date) => {
-    const [day, month, year] = date.split("-");
-    return `${year}-${month}-${day}`;
-  };
+  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     if (order) {
-      // console.log(order);
       setOrderData({
         ...order,
-        datePlaced: order.datePlaced
-          ? formatDateForInput(order.datePlaced)
-          : "",
-        endDate: order.endDate ? formatDateForInput(order.endDate) : "",
+        datePlaced: order.datePlaced ? order.datePlaced : "",
+        endDate: order.endDate ? order.endDate : "",
       });
     }
   }, [order]);
+
+  useEffect(() => {
+    // Check if all required fields are filled
+    const isFormValid =
+      orderData.client &&
+      orderData.weight &&
+      orderData.datePlaced &&
+      orderData.endDate &&
+      orderData.karigar &&
+      (orderData.karat !== "other" || orderData.customKarat) &&
+      (orderData.product !== "other" || orderData.customProduct);
+
+    setIsValid(isFormValid);
+  }, [orderData]);
 
   const handleClose = () => {
     setOrderData(initialOrderData);
@@ -70,14 +83,40 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
   };
 
   const handleCreateOrUpdateOrder = () => {
-    const updatedOrder = {
-      ID: order ? order.ID : Date.now(),
+    const currOrder = {
+      id: order ? order.id : Date.now(),
       ...orderData,
       karat:
         orderData.karat === "other" ? orderData.customKarat : orderData.karat,
+      product:
+        orderData.product === "other"
+          ? orderData.customProduct
+          : orderData.product,
     };
-    console.log(updatedOrder);
-    onAddOrder(updatedOrder);
+
+    if (order) {
+      // Check if the karigar has changed
+      if (order.karigar !== orderData.karigar) {
+        // Remove the task from the previous karigar's tasks array
+        removeTaskFromKarigar(order.karigar, order.id);
+        // Add the task to the new karigar's tasks array
+        addTaskToKarigar(orderData.karigar, order.id);
+      }
+
+      // Update the order
+      updateOrder(order.id, currOrder);
+    } else {
+      // Add the new order
+      addOrder(currOrder);
+
+      // Add the task to the selected karigar's tasks array
+      addTaskToKarigar(orderData.karigar, currOrder.id);
+    }
+    if (order) {
+      setOrder(currOrder);
+      handleCloseModal();
+    }
+
     handleClose();
   };
 
@@ -126,10 +165,11 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
                 value={orderData.client}
                 onChange={handleChange}
                 margin="normal"
+                required
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth margin="normal">
+              <FormControl fullWidth margin="normal" required>
                 <InputLabel>Karat</InputLabel>
                 <Select
                   name="karat"
@@ -150,6 +190,7 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
                   value={orderData.customKarat}
                   onChange={handleChange}
                   margin="normal"
+                  required
                 />
               )}
             </Grid>
@@ -161,9 +202,38 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
                 value={orderData.weight}
                 onChange={handleChange}
                 margin="normal"
+                required
               />
             </Grid>
             <Grid item xs={12} md={6}>
+              <FormControl fullWidth margin="normal" required>
+                <InputLabel>Product</InputLabel>
+                <Select
+                  name="product"
+                  value={orderData.product}
+                  onChange={handleChange}
+                >
+                  {products &&
+                    products.map((product) => (
+                      <MenuItem value={product}>{product}</MenuItem>
+                    ))}
+
+                  <MenuItem value="other">Other</MenuItem>
+                </Select>
+              </FormControl>
+              {orderData.product === "other" && (
+                <TextField
+                  fullWidth
+                  label="Custom product"
+                  name="customProduct"
+                  value={orderData.customProduct}
+                  onChange={handleChange}
+                  margin="normal"
+                  required
+                />
+              )}
+            </Grid>
+            {/* <Grid item xs={12} md={6}>
               <FormControl fullWidth margin="normal">
                 <Button
                   variant="outlined"
@@ -181,8 +251,8 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
                   </Typography>
                 )}
               </FormControl>
-            </Grid>
-            <Grid item xs={12}>
+            </Grid> */}
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 multiline
@@ -204,6 +274,7 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
                 onChange={handleChange}
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
+                required
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -216,10 +287,11 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
                 onChange={handleChange}
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
+                required
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth margin="normal">
+              <FormControl fullWidth margin="normal" required>
                 <InputLabel>Karigar</InputLabel>
                 <Select
                   name="karigar"
@@ -227,17 +299,15 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
                   onChange={handleChange}
                 >
                   {karigars &&
-                    Object.keys(karigars).map((karigarId) => {
-                      const karigar = karigars[karigarId];
-                      return (
-                        <MenuItem key={karigar.name} value={karigar.name}>
-                          {karigar.name}
-                        </MenuItem>
-                      );
-                    })}
+                    karigars.map((karigar) => (
+                      <MenuItem key={karigar.id} value={karigar.id}>
+                        {karigar.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid item xs={12} md={6}>
               <FormControl component="fieldset" margin="normal" fullWidth>
                 <RadioGroup
@@ -260,11 +330,23 @@ const OrderForm = ({ onAddOrder, open, setOpen, order }) => {
               </FormControl>
             </Grid>
           </Grid>
-          <Box mt={2} display="flex" justifyContent="flex-end">
+
+          <Box
+            mt={2}
+            display="flex"
+            justifyContent="flex-end"
+            flexDirection="column"
+          >
+            {!isValid && (
+              <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+                Please fill all mandatory fields marked with *
+              </Typography>
+            )}
             <Button
               variant="contained"
               color="primary"
               onClick={handleCreateOrUpdateOrder}
+              disabled={!isValid} // Disable button if form is not valid
             >
               {order ? "Edit Order" : "Create Order"}
             </Button>

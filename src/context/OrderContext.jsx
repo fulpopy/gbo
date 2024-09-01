@@ -1,32 +1,35 @@
 import React, { createContext, useEffect, useState } from "react";
-import { tempOrders } from "../constants/order";
+import { ordersList } from "../constants/order";
 
 export const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
-  const [orders, setOrders] = useState({});
+  const [orders, setOrders] = useState([]);
+
   useEffect(() => {
-    setOrders(tempOrders);
+    setOrders(ordersList);
   }, []);
 
-  const addOrder = (id, newOrder) => {
-    setOrders((prevOrders) => ({
-      ...prevOrders,
-      [id]: newOrder,
-    }));
+  const addOrder = (newOrder) => {
+    console.log("added new order: ", newOrder);
+    setOrders((prevOrders) => [...prevOrders, newOrder]);
   };
 
   const updateOrder = (id, updatedOrder) => {
-    setOrders((prevOrders) => ({
-      ...prevOrders,
-      [id]: updatedOrder,
-    }));
+    console.log(`Updated order#${id}: `, updatedOrder);
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === id ? { ...order, ...updatedOrder } : order
+      )
+    );
   };
 
   const deleteOrder = (orderId) => {
-    const newOrders = { ...orders };
-    delete newOrders[orderId];
-    setOrders(newOrders);
+    console.log(`Deleted order#${orderId}`);
+    console.log(orderId);
+    setOrders((prevOrders) =>
+      prevOrders.filter((order) => order.id !== orderId)
+    );
   };
 
   return (

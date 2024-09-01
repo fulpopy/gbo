@@ -1,12 +1,8 @@
-export const tempKarigars = {
-  1725129320477: {
-    name: "New Karigar",
-    description: "New Karigar description",
-    tasks: [],
+export const tempKarigars = [
+  {
+    id: 1725199180004,
+    name: "test",
+    description: "test",
+    tasks: ["1725199205984"],
   },
-  1725129322887: {
-    name: "New Karigar",
-    description: "New Karigar description",
-    tasks: [],
-  },
-};
+];

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Typography,
   Box,
@@ -13,35 +13,25 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-// import { karigars } from "../constants/karigars";
 import KarigarForm from "./KarigarForm";
 import { KarigarContext } from "../context";
 
 const KarigarList = ({ openKarigarModal, handleCloseKarigarModal }) => {
   const { karigars, deleteKarigar } = useContext(KarigarContext);
-  // const [karigars, setKarigarList] = useState({});
   const [openKarigarForm, setOpenKarigarForm] = useState(false);
   const [currentKarigar, setCurrentKarigar] = useState(null);
-
-  // useEffect(() => {
-  //   setKarigarList(karigars);
-  // }, []);
 
   const toggleAddKarigarForm = () => {
     setCurrentKarigar(null);
     setOpenKarigarForm(true);
   };
 
-  const toggleEditKarigarForm = (karigarId) => {
-    const karigar = { id: karigarId, ...karigars[karigarId] };
+  const toggleEditKarigarForm = (karigar) => {
     setCurrentKarigar(karigar);
     setOpenKarigarForm(true);
   };
 
   const handleDeleteKarigar = (karigarId) => {
-    // const updatedList = { ...karigars };
-    // delete updatedList[karigarId];
-    // setKarigarList(updatedList);
     deleteKarigar(karigarId);
   };
 
@@ -112,60 +102,57 @@ const KarigarList = ({ openKarigarModal, handleCloseKarigarModal }) => {
             }}
           >
             {karigars &&
-              Object.keys(karigars).map((karigarId) => {
-                const karigar = karigars[karigarId];
-                return (
-                  <Grid item key={karigarId}>
-                    <Card>
-                      <CardContent
+              karigars.map((karigar) => (
+                <Grid item key={karigar.id}>
+                  <Card>
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "8px",
+                        backgroundColor: "lightgrey",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <Typography variant="h6">{karigar.name}</Typography>
+                    </CardContent>
+                    <CardContent>
+                      <Typography variant="body1">
+                        {karigar.description}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <IconButton
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: "8px",
-                          backgroundColor: "lightgrey",
-                          borderRadius: "4px",
+                          margin: "0px 10px",
+                          color: "grey.700",
+                          "&:hover": {
+                            color: "blue",
+                          },
                         }}
+                        aria-label="edit"
+                        onClick={() => toggleEditKarigarForm(karigar)}
                       >
-                        <Typography variant="h6">{karigar.name}</Typography>
-                      </CardContent>
-                      <CardContent>
-                        <Typography variant="body1">
-                          {karigar.description}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <IconButton
-                          sx={{
-                            margin: "0px 10px",
-                            color: "grey.700",
-                            "&:hover": {
-                              color: "blue",
-                            },
-                          }}
-                          aria-label="edit"
-                          onClick={() => toggleEditKarigarForm(karigarId)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          sx={{
-                            margin: "0px 10px",
-                            color: "grey.700",
-                            "&:hover": {
-                              color: "red",
-                            },
-                          }}
-                          aria-label="delete"
-                          onClick={() => handleDeleteKarigar(karigarId)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                );
-              })}
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        sx={{
+                          margin: "0px 10px",
+                          color: "grey.700",
+                          "&:hover": {
+                            color: "red",
+                          },
+                        }}
+                        aria-label="delete"
+                        onClick={() => handleDeleteKarigar(karigar.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
           </Grid>
         </Box>
       </Modal>

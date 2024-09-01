@@ -1,21 +1,29 @@
 import { Close } from "@mui/icons-material";
 import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import OrderForm from "./OrderForm";
+import { OrderContext, KarigarContext } from "../context";
+import ConfirmChangeStatus from "./ConfirmChangeStatus";
 
-function OrderModal({ modalOpen, order, handleCloseModal }) {
+function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
   const [openForm, setOpenForm] = useState(false);
-
+  const [openConfirmStatus, setOpenConfirmStatus] = useState(false);
+  const { orders, deleteOrder } = useContext(OrderContext);
+  const { karigars } = useContext(KarigarContext);
   const handleEdit = () => {
-    // Handle edit functionality
     setOpenForm(true);
-    // console.log("Edit", order);
   };
 
   const handleDelete = () => {
-    // Handle delete functionality
-    console.log("Delete", order);
-    handleCloseModal();
+    deleteOrder(order.id); // Ensure this id is correct and exists in your orders state
+    handleCloseModal(); // Close the modal after deleting
+  };
+  const handleClickOpen = () => {
+    setOpenConfirmStatus(true);
+  };
+
+  const handleClose = () => {
+    setOpenConfirmStatus(false);
   };
 
   return (
@@ -48,7 +56,7 @@ function OrderModal({ modalOpen, order, handleCloseModal }) {
           {order && (
             <>
               <Typography variant="h6" component="div" gutterBottom>
-                {`Order#${order.ID}`}
+                {`Order#${order.id}`}
               </Typography>
               <Typography variant="body1">
                 <strong>Client:</strong> {order.client}
@@ -71,6 +79,32 @@ function OrderModal({ modalOpen, order, handleCloseModal }) {
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                 <Button
                   variant="contained"
+                  color="success"
+                  onClick={handleClickOpen}
+                  sx={{
+                    borderColor: "green",
+                    color: "green",
+                    backgroundColor: "transparent",
+                    mr: 1,
+                    cursor: "pointer",
+                    "&:hover": {
+                      borderColor: "darkgreen",
+                      color: "white",
+                    },
+                  }}
+                >
+                  Change Status
+                </Button>
+                <ConfirmChangeStatus
+                  open={openConfirmStatus}
+                  handleClose={handleClose}
+                  selectedOrder={order}
+                  setSelectedOrder={setOrder}
+                  active={active}
+                  handleCloseModal={handleCloseModal}
+                />
+                <Button
+                  variant="contained"
                   color="primary"
                   sx={{ mr: 1 }}
                   onClick={handleEdit}
@@ -91,7 +125,13 @@ function OrderModal({ modalOpen, order, handleCloseModal }) {
       </Modal>
       {/* Only render the OrderForm if openForm is true */}
       {openForm && (
-        <OrderForm open={openForm} setOpen={setOpenForm} order={order} />
+        <OrderForm
+          open={openForm}
+          setOpen={setOpenForm}
+          order={order}
+          setOrder={setOrder}
+          handleCloseModal={handleCloseModal}
+        />
       )}
     </>
   );

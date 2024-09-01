@@ -36,12 +36,7 @@ function Header() {
     navigate("/");
   };
 
-  const handleAddOrder = (newOrder) => {
-    setOrders([...orders, newOrder]);
-  };
-
   const handleOpen = () => {
-    console.log("clicked");
     setOpen(true);
   };
 
@@ -257,7 +252,7 @@ function Header() {
         </Container>
       </AppBar>
 
-      <OrderForm onAddOrder={handleAddOrder} open={open} setOpen={setOpen} />
+      <OrderForm open={open} setOpen={setOpen} />
       <KarigarList
         openKarigarModal={openKarigarModal}
         setOpenKarigarModal={setOpenKarigarModal}

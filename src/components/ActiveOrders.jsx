@@ -1,6 +1,5 @@
 import { Box, Typography, styled } from "@mui/material";
 import OrderTable from "./OrderTable";
-import { orders } from "../constants/order";
 
 const Container = styled(Box)`
   margin: 15px 15px 0 15px;
@@ -32,7 +31,7 @@ const ActiveOrders = () => {
       >
         <ContainerText>Active Orders</ContainerText>
       </Box>
-      <OrderTable orders={orders} active={true} />
+      <OrderTable active={true} />
     </Container>
   );
 };

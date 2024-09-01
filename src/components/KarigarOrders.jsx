@@ -12,7 +12,7 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import { orders } from "../constants/order";
+import { ordersList } from "../constants/order";
 import OrderModal from "./OrderModal";
 
 const KarigarOrders = () => {
@@ -28,7 +28,7 @@ const KarigarOrders = () => {
     setSelectedOrder(null);
   };
 
-  const groupedOrders = orders.reduce((acc, order) => {
+  const groupedOrders = ordersList.reduce((acc, order) => {
     if (!acc[order.karigar]) {
       acc[order.karigar] = [];
     }
@@ -117,10 +117,10 @@ const KarigarOrders = () => {
                               Weight: {order.weight}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              Date Placed: {order.datePlaced}
+                              Date Placed: {order.date_placed}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              End Date: {order.endDate}
+                              End Date: {order.end_date}
                             </Typography>
                           </CardContent>
                         </Card>
