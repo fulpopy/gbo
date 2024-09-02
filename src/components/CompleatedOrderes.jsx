@@ -10,11 +10,6 @@ const Container = styled(Box)`
   border-radius: 5px;
 `;
 
-const ContainerText = styled(Typography)`
-  font-size: 1.5rem;
-  font-weight: 700;
-`;
-
 const CompleatedOrderes = () => {
   return (
     <Container
@@ -22,17 +17,6 @@ const CompleatedOrderes = () => {
         boxShadow: "0px 0px 10px 0px #d1d1d1",
       }}
     >
-      <Box
-        style={{
-          borderBottom: "2px solid #d1d1d1",
-          display: "flex",
-          justifyContent: "left",
-          alignItems: "center",
-          padding: "10px",
-        }}
-      >
-        <ContainerText>Compleated Orders</ContainerText>
-      </Box>
       <OrderTable active={false} />
     </Container>
   );

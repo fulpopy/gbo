@@ -15,6 +15,7 @@ import {
 import { ordersList } from "../constants/order";
 import { OrderContext, KarigarContext } from "../context";
 import OrderModal from "./OrderModal";
+import { getBackgroundColor } from "../utils";
 
 const KarigarOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -104,8 +105,9 @@ const KarigarOrders = () => {
                         <Card
                           sx={{
                             height: "150px",
-                            width: "200px",
-                            border: "3px solid yellow",
+                            width: "210px",
+                            border: "5px solid",
+                            borderColor: getBackgroundColor(order.endDate),
                             background:
                               order.karat === "18K"
                                 ? "#f9a8d4"
@@ -129,10 +131,23 @@ const KarigarOrders = () => {
                               Weight: {order.weight}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              Date Placed: {order.datePlaced}
+                              Product: {order.product}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              End Date: {order.endDate}
+                              Date Placed:{" "}
+                              {new Intl.DateTimeFormat("en-GB", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }).format(new Date(order.datePlaced))}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              End Date:
+                              {new Intl.DateTimeFormat("en-GB", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }).format(new Date(order.endDate))}
                             </Typography>
                           </CardContent>
                         </Card>

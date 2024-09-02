@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import {
   Typography,
+  Box,
   Table,
   TableHead,
   TableBody,
@@ -8,6 +9,7 @@ import {
   TableCell,
   TableContainer,
   Paper,
+  TextField,
   Button,
   Dialog,
   DialogTitle,
@@ -17,6 +19,7 @@ import {
 } from "@mui/material";
 import OrderModal from "./OrderModal";
 import { OrderContext, KarigarContext } from "../context";
+import { getBackgroundColor } from "../utils";
 
 const OrderTable = ({ active }) => {
   const [currentOrders, setCurrentOrders] = useState([]);
@@ -24,6 +27,7 @@ const OrderTable = ({ active }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const { orders } = useContext(OrderContext);
   const { karigars } = useContext(KarigarContext);
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     let temp;
     if (active) {
@@ -45,10 +49,38 @@ const OrderTable = ({ active }) => {
     setSelectedOrder(null);
   };
 
+  const filteredOrders = currentOrders.filter(
+    (order) =>
+      order.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.id.toString().includes(searchTerm)
+  );
   return (
     <>
+      <Box
+        style={{
+          borderBottom: "2px solid #d1d1d1",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "10px",
+        }}
+      >
+        <Typography sx={{ fontSize: "1.5rem", fontWeight: "700" }}>
+          {active ? "Active Orders" : "Compleated Orders"}
+        </Typography>
+        <TextField
+          variant="outlined"
+          size="small"
+          placeholder="Search by Client or ID"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{
+            width: "300px",
+          }}
+        />
+      </Box>
       <TableContainer component={Paper}>
-        <Table sx={{ whiteSpace: "nowrap" }}>
+        <Table>
           <TableHead
             sx={{
               "& th": {
@@ -72,7 +104,7 @@ const OrderTable = ({ active }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {currentOrders.map((order, index) => (
+            {filteredOrders.map((order, index) => (
               <TableRow
                 key={order.id}
                 sx={{
@@ -109,11 +141,25 @@ const OrderTable = ({ active }) => {
                 <TableCell sx={{ textAlign: "center" }}>
                   {order.description}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  {order.datePlaced}
+                <TableCell sx={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                  {new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }).format(new Date(order.datePlaced))}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  {order.endDate}
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                    whiteSpace: "nowrap",
+                    backgroundColor: getBackgroundColor(order.endDate),
+                  }}
+                >
+                  {new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }).format(new Date(order.endDate))}
                 </TableCell>
                 <TableCell sx={{ textAlign: "center" }}>
                   {karigars.map((karigar) => {

@@ -1,5 +1,17 @@
 import { Close } from "@mui/icons-material";
-import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Modal,
+  Table,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+  Paper,
+  TableHead,
+} from "@mui/material";
 import React, { useContext, useState } from "react";
 import OrderForm from "./OrderForm";
 import { OrderContext, KarigarContext } from "../context";
@@ -40,7 +52,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: { xs: 300, md: 600 },
-            maxHeight: "90vh",
+            maxHeight: "85vh",
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
@@ -55,27 +67,188 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
           </IconButton>
           {order && (
             <>
-              <Typography variant="h6" component="div" gutterBottom>
-                {`Order#${order.id}`}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Client:</strong> {order.client}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Karat:</strong> {order.karat}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Weight:</strong> {order.weight}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Status:</strong> {order.status}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Date Placed:</strong> {order.datePlaced}
-              </Typography>
-              <Typography variant="body1">
-                <strong>End Date:</strong> {order.endDate}
-              </Typography>
+              <Box
+                style={{
+                  padding: "10px",
+                }}
+              >
+                <Typography
+                  sx={{ fontSize: "1.5rem", fontWeight: 700 }}
+                >{`Order#${order.id}`}</Typography>
+              </Box>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      <Typography component="div" gutterBottom>
+                        Client
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      {order.client}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      <Typography component="div" gutterBottom>
+                        Product
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      {order.product}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      <Typography component="div" gutterBottom>
+                        Karat
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      {order.karat}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      <Typography component="div" gutterBottom>
+                        Weight
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      {order.weight}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      <Typography component="div" gutterBottom>
+                        Description
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      {order.description}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      <Typography component="div" gutterBottom>
+                        Date Placed
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      {new Intl.DateTimeFormat("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }).format(new Date(order.datePlaced))}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      <Typography component="div" gutterBottom>
+                        End Date
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      {new Intl.DateTimeFormat("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }).format(new Date(order.endDate))}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      <Typography component="div" gutterBottom>
+                        Status
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        border: "1px solid #ddd",
+                      }}
+                    >
+                      {order.status}
+                    </TableCell>
+                  </TableRow>
+                </Table>
+              </TableContainer>
+
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                 <Button
                   variant="contained"
