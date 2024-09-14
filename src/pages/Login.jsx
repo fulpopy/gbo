@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Container,
   TextField,
@@ -8,14 +8,14 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { login } from "../api/login";
+import { UserContext } from "../context";
 
-const validCredentials = {
-  userID: "purnim",
-  password: "123",
-};
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const { setUser } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
     userId: "",
@@ -32,13 +32,12 @@ const Login = () => {
     setInvalid(false);
   };
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    if (
-      formData.userId === validCredentials.userID &&
-      formData.password === validCredentials.password
-    ) {
-      localStorage.setItem("auth", true);
+    const user = await login(formData.userId, formData.password);
+    if (user) {
+      localStorage.setItem("accessToken", user.accessToken);
+      setUser(user);
       navigate("/home");
     } else {
       setInvalid(true);

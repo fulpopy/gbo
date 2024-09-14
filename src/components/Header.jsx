@@ -32,7 +32,7 @@ function Header() {
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleLogout = () => {
-    localStorage.removeItem("auth");
+    localStorage.removeItem("accessToken");
     navigate("/");
   };
 
