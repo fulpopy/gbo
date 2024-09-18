@@ -33,21 +33,21 @@ const KarigarOrders = () => {
     setSelectedOrder(null);
   };
 
-  useEffect(() => {
-    console.log("useEffectCalled");
+  // useEffect(() => {
+  //   console.log("useEffectCalled");
 
-    const currOrders = orders.reduce((acc, order) => {
-      const karigar = karigars.find((k) => k.id === order.karigar);
-      const name = karigar ? karigar.name : "Unknown Karigar";
-      if (!acc[name]) {
-        acc[name] = [];
-      }
-      if (order.status === "Active") acc[name].push(order);
-      return acc;
-    }, {});
-    // console.log(currOrders);
-    setGroupOrderes(currOrders);
-  }, [orders, karigars]);
+  //   const currOrders = orders.reduce((acc, order) => {
+  //     const karigar = karigars.find((k) => k.id === order.karigar);
+  //     const name = karigar ? karigar.name : "Unknown Karigar";
+  //     if (!acc[name]) {
+  //       acc[name] = [];
+  //     }
+  //     if (order.status === "Active") acc[name].push(order);
+  //     return acc;
+  //   }, {});
+  //   // console.log(currOrders);
+  //   setGroupOrderes(currOrders);
+  // }, [orders, karigars]);
 
   return (
     <Box p={2}>

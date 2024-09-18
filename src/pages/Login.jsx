@@ -8,7 +8,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { login } from "../api/login";
+import { login } from "../server/api";
 import { UserContext } from "../context";
 
 
@@ -18,7 +18,7 @@ const Login = () => {
   const { setUser } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
-    userId: "",
+    username: "",
     password: "",
   });
   const [invalid, setInvalid] = useState(false);
@@ -34,7 +34,7 @@ const Login = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const user = await login(formData.userId, formData.password);
+    const user = await login(formData);
     if (user) {
       localStorage.setItem("accessToken", user.accessToken);
       setUser(user);
@@ -80,8 +80,8 @@ const Login = () => {
               fullWidth
               margin="normal"
               required
-              name="userId"
-              value={formData.userId}
+              name="username"
+              value={formData.username}
               onChange={handleChange}
             />
             <TextField

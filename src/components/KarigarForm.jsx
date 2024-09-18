@@ -14,7 +14,6 @@ const KarigarForm = ({ openKarigarForm, handleCloseKarigarForm, karigar }) => {
   const initialKarigarData = {
     name: "",
     description: "",
-    tasks: [],
   };
 
   const { updateKarigar, addKarigar } = useContext(KarigarContext);
@@ -40,15 +39,15 @@ const KarigarForm = ({ openKarigarForm, handleCloseKarigarForm, karigar }) => {
   };
 
   const handleCreateOrUpdateKarigar = () => {
-    const currKarigar = {
-      id: karigar ? karigar.id : Date.now(),
-      ...karigarData,
-    };
+    // const currKarigar = {
+    //   id: karigar ? karigar.id : Date.now(),
+    //   ...karigarData,
+    // };
 
     if (karigar) {
-      updateKarigar(karigar.id, currKarigar);
+      updateKarigar(karigarData);
     } else {
-      addKarigar(currKarigar);
+      addKarigar(karigarData);
     }
 
     handleCloseKarigarForm();
