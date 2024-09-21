@@ -9,16 +9,15 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
   Grid,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { OrderContext, KarigarContext } from "../context";
 import { products } from "../constants/products";
+import { uploadImagesToS3 } from "../server/awsS3-config";
 
 const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   const initialOrderData = {
@@ -26,8 +25,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
     karat: "18K",
     product: "",
     weight: "",
-    image: null,
-    imageName: "",
+    images: [],
     description: "",
     datePlaced: "",
     endDate: "",
@@ -36,13 +34,13 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
     customKarat: "",
   };
 
-  const { karigars, addTaskToKarigar, removeTaskFromKarigar } =
-    useContext(KarigarContext);
+  const { karigars } = useContext(KarigarContext);
   const { addOrder, updateOrder } = useContext(OrderContext);
 
   const [orderData, setOrderData] = useState(initialOrderData);
-
+  const [imageFiles, setImageFiles] = useState([]); // To hold file objects for S3 upload
   const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (order) {
@@ -55,7 +53,6 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   }, [order]);
 
   useEffect(() => {
-    // Check if all required fields are filled
     const isFormValid =
       orderData.client &&
       orderData.weight &&
@@ -70,6 +67,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
 
   const handleClose = () => {
     setOrderData(initialOrderData);
+    setImageFiles([]);
     setOpen(false);
   };
 
@@ -79,10 +77,36 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   };
 
   const handleImageUpload = (e) => {
-    setOrderData({ ...orderData, image: e.target.files[0] });
+    const files = Array.from(e.target.files);
+    const imagePreviews = files.map((file) => URL.createObjectURL(file));
+
+    setOrderData((prevState) => ({
+      ...prevState,
+      images: [...prevState.images, ...imagePreviews],
+    }));
+    setImageFiles([...imageFiles, ...files]); // Store files for S3 upload
+
+    e.target.value = "";
   };
 
-  const handleCreateOrUpdateOrder = () => {
+  const removeImage = (index) => {
+    setOrderData((prevState) => ({
+      ...prevState,
+      images: prevState.images.filter((_, imgIndex) => imgIndex !== index),
+    }));
+    setImageFiles(imageFiles.filter((_, imgIndex) => imgIndex !== index));
+  };
+
+  const handleCreateOrUpdateOrder = async () => {
+    setLoading(true);
+    const uploadedImageUrls = await uploadImagesToS3(imageFiles);
+    setLoading(false);
+    console.log(uploadedImageUrls);
+    if (!uploadedImageUrls) {
+      console.log("Failed to upload images");
+      return;
+    }
+
     const currOrder = {
       id: order ? order.id : Date.now(),
       ...orderData,
@@ -92,26 +116,20 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
         orderData.product === "other"
           ? orderData.customProduct
           : orderData.product,
+      images: uploadedImageUrls, // Use the uploaded S3 image URLs
     };
 
     if (order) {
-      // Check if the karigar has changed
       if (order.karigar !== orderData.karigar) {
-        // Remove the task from the previous karigar's tasks array
-        removeTaskFromKarigar(order.karigar, order.id);
-        // Add the task to the new karigar's tasks array
-        addTaskToKarigar(orderData.karigar, order.id);
+        // removeTaskFromKarigar(order.karigar, order.id);
+        // addTaskToKarigar(orderData.karigar, order.id);
       }
-
-      // Update the order
       updateOrder(order.id, currOrder);
     } else {
-      // Add the new order
       addOrder(currOrder);
-
-      // Add the task to the selected karigar's tasks array
-      addTaskToKarigar(orderData.karigar, currOrder.id);
+      // addTaskToKarigar(orderData.karigar, currOrder.id);
     }
+
     if (order) {
       setOrder(currOrder);
       handleCloseModal();
@@ -233,7 +251,62 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                 />
               )}
             </Grid>
-            {/* <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6}>
+              <Box
+                mt={1}
+                display="flex"
+                sx={{
+                  overflowX: orderData.images.length === 0 ? "none" : "scroll",
+                  height: orderData.images.length === 0 ? "50px" : "130px",
+                  bgcolor: "#f5f5f5",
+                }}
+              >
+                {orderData.images.length === 0 ? (
+                  <Box
+                    sx={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                    }}
+                  >
+                    <Typography sx={{ fontSize: "0.875rem" }} color="error">
+                      *No image selected
+                    </Typography>
+                  </Box>
+                ) : (
+                  orderData.images.map((image, index) => (
+                    <Box
+                      key={index}
+                      sx={{ position: "relative", mr: 1, mb: 1 }}
+                    >
+                      <img
+                        src={image}
+                        alt={`Uploaded ${index}`}
+                        style={{ width: 100, height: 100, objectFit: "cover" }}
+                      />
+                      <IconButton
+                        onClick={() => removeImage(index)}
+                        sx={{
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          bgcolor: "white",
+                          borderRadius: "50%",
+                          "&:hover": {
+                            bgcolor: "white",
+                          },
+                        }}
+                      >
+                        <CloseIcon
+                          sx={{ fontSize: "1rem", color: "rgb(0 0 0)" }}
+                        />
+                      </IconButton>
+                    </Box>
+                  ))
+                )}
+              </Box>
               <FormControl fullWidth margin="normal">
                 <Button
                   variant="outlined"
@@ -242,21 +315,22 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                   startIcon={<FileUploadIcon />}
                   sx={{ textTransform: "none" }}
                 >
-                  Upload Image
-                  <input type="file" hidden onChange={handleImageUpload} />
+                  Add Images
+                  <input
+                    type="file"
+                    multiple
+                    hidden
+                    onChange={handleImageUpload}
+                  />
                 </Button>
-                {orderData.imageName && (
-                  <Typography variant="body2" sx={{ mt: 1 }}>
-                    {orderData.imageName}
-                  </Typography>
-                )}
               </FormControl>
-            </Grid> */}
+            </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 multiline
-                rows={3}
+                rows={6}
                 label="Description"
                 name="description"
                 value={orderData.description}
@@ -307,28 +381,6 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                 </Select>
               </FormControl>
             </Grid>
-
-            <Grid item xs={12} md={6}>
-              <FormControl component="fieldset" margin="normal" fullWidth>
-                <RadioGroup
-                  row
-                  name="status"
-                  value={orderData.status}
-                  onChange={handleChange}
-                >
-                  <FormControlLabel
-                    value="Active"
-                    control={<Radio />}
-                    label="Active"
-                  />
-                  <FormControlLabel
-                    value="Completed"
-                    control={<Radio />}
-                    label="Completed"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </Grid>
           </Grid>
 
           <Box
@@ -346,9 +398,10 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
               variant="contained"
               color="primary"
               onClick={handleCreateOrUpdateOrder}
-              disabled={!isValid} // Disable button if form is not valid
+              disabled={!isValid || loading} // Disable button if form is not valid or loading
+              endIcon={loading ? <CircularProgress size={20} /> : null}
             >
-              {order ? "Edit Order" : "Create Order"}
+              {loading ? "Uploading..." : order ? "Edit Order" : "Create Order"}
             </Button>
           </Box>
         </form>

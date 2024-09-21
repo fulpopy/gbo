@@ -1,5 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { ordersList } from "../constants/order";
+import { getOrders } from "../server/api";
+import { parseOrderFromApi } from "../utils";
 
 export const OrderContext = createContext();
 
@@ -7,7 +9,11 @@ export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    setOrders(ordersList);
+    const getAllOrders = async () => {
+      const res = await getOrders();
+      setOrders(parseOrderFromApi(res.data));
+    };
+    getAllOrders();
   }, []);
 
   const addOrder = (newOrder) => {

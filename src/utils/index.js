@@ -1,3 +1,4 @@
 import getBackgroundColor from "./getBackgroundColor";
+import { parseOrderFromApi, formatOrderToApi } from "./parseOrder";
 
-export { getBackgroundColor };
+export { getBackgroundColor, parseOrderFromApi, formatOrderToApi };

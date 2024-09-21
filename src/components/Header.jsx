@@ -38,6 +38,7 @@ function Header() {
 
   const handleOpen = () => {
     setOpen(true);
+    handleCloseNavMenu(false);
   };
 
   const handleOpenKarigarModal = () => setOpenKarigarModal(true);

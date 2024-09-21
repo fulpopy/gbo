@@ -10,6 +10,7 @@ import {
   TableContainer,
   Paper,
   TextField,
+  Grid,
   Button,
   Dialog,
   DialogTitle,
@@ -20,6 +21,7 @@ import {
 import OrderModal from "./OrderModal";
 import { OrderContext, KarigarContext } from "../context";
 import { getBackgroundColor } from "../utils";
+import ImageDialog from "./ImageDialog";
 
 const OrderTable = ({ active }) => {
   const [currentOrders, setCurrentOrders] = useState([]);
@@ -28,6 +30,10 @@ const OrderTable = ({ active }) => {
   const { orders } = useContext(OrderContext);
   const { karigars } = useContext(KarigarContext);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   useEffect(() => {
     let temp;
     if (active) {
@@ -40,13 +46,20 @@ const OrderTable = ({ active }) => {
   }, [orders]);
 
   const handleCardClick = (order) => {
-    // console.log(order);
     setSelectedOrder(order);
     setModalOpen(true);
   };
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedOrder(null);
+  };
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setImageModalOpen(true);
+  };
+  const handleCloseImageModal = () => {
+    setImageModalOpen(false);
+    setSelectedImage(null);
   };
 
   const filteredOrders = currentOrders.filter(
@@ -131,13 +144,38 @@ const OrderTable = ({ active }) => {
                 <TableCell sx={{ textAlign: "center" }}>
                   {order.weight}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  <img
-                    src={order.image}
-                    alt="Order"
-                    style={{ width: "100px", height: "auto" }}
-                  />
+                <TableCell sx={{ textAlign: "center", maxWidth: "250px" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      overflowX: "auto", // Enable horizontal scrolling
+                      maxHeight: "120px", // Set a fixed height to prevent row height from increasing
+                    }}
+                  >
+                    {order.images.map((image, idx) => (
+                      <Box
+                        key={idx}
+                        sx={{
+                          flexShrink: 0, // Prevent images from shrinking
+                          marginRight: "8px", // Space between images
+                        }}
+                      >
+                        <img
+                          src={image}
+                          alt={`Order ${order.id}`}
+                          style={{
+                            // width: "100px", // Set the image width
+                            height: "90px", // Set a fixed image height to keep it consistent
+                            objectFit: "cover", // Ensure the image fits within the box without stretching
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleImageClick(image)}
+                        />
+                      </Box>
+                    ))}
+                  </Box>
                 </TableCell>
+
                 <TableCell sx={{ textAlign: "center" }}>
                   {order.description}
                 </TableCell>
@@ -201,6 +239,11 @@ const OrderTable = ({ active }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <ImageDialog
+        imageModalOpen={imageModalOpen}
+        handleCloseImageModal={handleCloseImageModal}
+        selectedImage={selectedImage}
+      />
       <OrderModal
         modalOpen={modalOpen}
         order={selectedOrder}
