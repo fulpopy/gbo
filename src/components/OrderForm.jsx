@@ -17,7 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { OrderContext, KarigarContext } from "../context";
 import { products } from "../constants/products";
-import { uploadImagesToS3 } from "../server/awsS3-config";
+import { uploadImagesYoS3 } from "../server/api";
 
 const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   const initialOrderData = {
@@ -99,7 +99,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
 
   const handleCreateOrUpdateOrder = async () => {
     setLoading(true);
-    const uploadedImageUrls = await uploadImagesToS3(imageFiles);
+    const uploadedImageUrls = await uploadImagesYoS3(imageFiles);
     setLoading(false);
     console.log(uploadedImageUrls);
     if (!uploadedImageUrls) {

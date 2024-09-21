@@ -76,3 +76,21 @@ export const getOrders = async () => {
     console.log(err);
   }
 };
+
+export const uploadImagesYoS3 = async (images) => {
+  const formData = new FormData();
+
+  images.forEach((image) => {
+    formData.append("images", image);
+  });
+
+  try {
+    const response = await axios.post(`${URL}/api/images/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("Image URLs:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading images:", error);
+  }
+};
