@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
@@ -17,6 +17,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../icons/logo.png";
 import OrderForm from "./OrderForm";
 import KarigarList from "./KarigarList";
+import { UserContext } from "../context";
 
 const pages = ["home", "orders", "history"];
 const settings = ["Account", "Logout"];
@@ -30,9 +31,10 @@ function Header() {
   const [orders, setOrders] = useState([]);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const { logout } = useContext(UserContext);
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
+    logout();
     navigate("/");
   };
 

@@ -1,8 +1,5 @@
 import axios from "axios";
-const token = localStorage.getItem("accessToken");
-const header = {
-  headers: { "x-access-token": token },
-};
+import { formatOrderToApi } from "../utils";
 
 const URL = "http://localhost:3001";
 export const login = async (user) => {
@@ -24,6 +21,10 @@ export const signup = async (user) => {
 };
 
 export const getKarigars = async () => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
   try {
     let res = await axios.get(`${URL}/api/karigars`, header);
     return res;
@@ -33,6 +34,10 @@ export const getKarigars = async () => {
 };
 
 export const addKarigars = async (karigar) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
   try {
     let res = await axios.post(`${URL}/api/karigars`, karigar, header);
     return res;
@@ -43,6 +48,10 @@ export const addKarigars = async (karigar) => {
 };
 
 export const updateKarigars = async (karigar) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
   console.log(karigar);
   try {
     let res = await axios.put(
@@ -58,6 +67,10 @@ export const updateKarigars = async (karigar) => {
 };
 
 export const deleteKarigars = async (id) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
   try {
     console.log(id);
     let res = await axios.delete(`${URL}/api/karigars/${id}`, header);
@@ -69,6 +82,10 @@ export const deleteKarigars = async (id) => {
 };
 
 export const getOrders = async () => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
   try {
     let res = await axios.get(`${URL}/api/orders`, header);
     return res;
@@ -78,6 +95,10 @@ export const getOrders = async () => {
 };
 
 export const uploadImagesYoS3 = async (images) => {
+  // const token = localStorage.getItem("accessToken");
+  // const header = {
+  //   headers: { "x-access-token": token },
+  // };
   const formData = new FormData();
 
   images.forEach((image) => {
@@ -92,5 +113,24 @@ export const uploadImagesYoS3 = async (images) => {
     return response.data;
   } catch (error) {
     console.error("Error uploading images:", error);
+  }
+};
+
+export const addOrders = async (newOrder, user) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
+  console.log(newOrder, user);
+  try {
+    let res = await axios.post(
+      `${URL}/api/orders`,
+      formatOrderToApi(newOrder, user),
+      header
+    );
+    return res;
+  } catch (error) {
+    console.log(error.message);
+    return { status: 400 };
   }
 };

@@ -37,9 +37,9 @@ const OrderTable = ({ active }) => {
   useEffect(() => {
     let temp;
     if (active) {
-      temp = orders.filter((ele) => ele.status === "Active");
+      temp = orders.filter((ele) => ele.status === 1 || ele.status === 2);
     } else {
-      temp = orders.filter((ele) => ele.status === "Completed");
+      temp = orders.filter((ele) => ele.status === 3);
     }
     setCurrentOrders(temp);
     // console.log(orders);
@@ -79,7 +79,7 @@ const OrderTable = ({ active }) => {
         }}
       >
         <Typography sx={{ fontSize: "1.5rem", fontWeight: "700" }}>
-          {active ? "Active Orders" : "Compleated Orders"}
+          {active ? "Active Orders" : "Received Orders"}
         </Typography>
         <TextField
           variant="outlined"
@@ -113,7 +113,7 @@ const OrderTable = ({ active }) => {
               <TableCell sx={{ textAlign: "center" }}>Date Placed</TableCell>
               <TableCell sx={{ textAlign: "center" }}>End Date</TableCell>
               <TableCell sx={{ textAlign: "center" }}>Karigar</TableCell>
-              {/* <TableCell sx={{ textAlign: "center" }}>Change Status</TableCell> */}
+              <TableCell sx={{ textAlign: "center" }}>Completed</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -207,7 +207,13 @@ const OrderTable = ({ active }) => {
                     return "";
                   })}
                 </TableCell>
-                {/* <TableCell sx={{ textAlign: "center" }}>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                    maxWidth: "fit-content",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   <Tooltip
                     title={
                       active
@@ -218,7 +224,7 @@ const OrderTable = ({ active }) => {
                     <Button
                       variant="outlined"
                       color="success"
-                      onClick={() => handleClickOpen(order)}
+                      // onClick={() => handleClickOpen(order)}
                       sx={{
                         borderColor: "green",
                         color: "green",
@@ -230,10 +236,10 @@ const OrderTable = ({ active }) => {
                         },
                       }}
                     >
-                      Change Status
+                      Mark as Complete
                     </Button>
                   </Tooltip>
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

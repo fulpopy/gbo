@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 import { tempKarigars } from "../constants/karigars";
 import {
   addKarigars,
@@ -7,6 +7,7 @@ import {
   updateKarigars,
 } from "../server/api";
 import AlertSnackbar from "../components/AlertSnackbar";
+import { UserContext } from "./UserContext";
 
 export const KarigarContext = createContext();
 
@@ -15,20 +16,22 @@ export const KarigarProvider = ({ children }) => {
   const [alertOpen, setAlertOpen] = useState(false); // For Snackbar state
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success"); // success or error
+  const { token } = useContext(UserContext);
 
   useEffect(() => {
-    const getAllKarigars = async () => {
-      let res = await getKarigars();
-      setKarigars(res.data);
-    };
-    getAllKarigars();
-    setKarigars(tempKarigars);
-  }, []);
+    if (token) {
+      const getAllKarigars = async () => {
+        let res = await getKarigars();
+        setKarigars(res?.data);
+      };
+      getAllKarigars();
+    }
+  }, [token]);
 
   const addKarigar = async (newKarigar) => {
     // console.log("added new karigar: ", newKarigar);
     const res = await addKarigars(newKarigar);
-    if (res.status === 200) {
+    if (res.status === 201) {
       setKarigars((prevKarigars) => [...prevKarigars, res.data]);
       setAlertMessage("Karigar added successfully!");
       setAlertSeverity("success");

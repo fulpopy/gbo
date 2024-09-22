@@ -243,7 +243,11 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
                         border: "1px solid #ddd",
                       }}
                     >
-                      {order.status}
+                      {order.status === 1
+                        ? "Active"
+                        : order.status === 2
+                        ? "Completed"
+                        : "Received"}
                     </TableCell>
                   </TableRow>
                 </Table>
@@ -266,7 +270,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
                     },
                   }}
                 >
-                  Change Status
+                  Order Received
                 </Button>
                 <ConfirmChangeStatus
                   open={openConfirmStatus}

@@ -8,14 +8,13 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { login } from "../server/api";
+import { login as loginApi } from "../server/api";
 import { UserContext } from "../context";
-
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const { setUser } = useContext(UserContext);
+  const { login } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -34,10 +33,9 @@ const Login = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const user = await login(formData);
+    const user = await loginApi(formData);
     if (user) {
-      localStorage.setItem("accessToken", user.accessToken);
-      setUser(user);
+      login(user, user.accessToken);
       navigate("/home");
     } else {
       setInvalid(true);

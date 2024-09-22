@@ -30,7 +30,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
     datePlaced: "",
     endDate: "",
     karigar: "",
-    status: "Active",
+    status: 1,
     customKarat: "",
   };
 
@@ -101,7 +101,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
     setLoading(true);
     const uploadedImageUrls = await uploadImagesYoS3(imageFiles);
     setLoading(false);
-    console.log(uploadedImageUrls);
+    // console.log(uploadedImageUrls);
     if (!uploadedImageUrls) {
       console.log("Failed to upload images");
       return;
@@ -126,7 +126,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
       }
       updateOrder(order.id, currOrder);
     } else {
-      addOrder(currOrder);
+      await addOrder(currOrder);
       // addTaskToKarigar(orderData.karigar, currOrder.id);
     }
 

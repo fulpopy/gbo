@@ -13,7 +13,7 @@ export const parseOrderFromApi = (apiOrders) => {
     datePlaced: apiOrder.placed_date ? apiOrder.placed_date.split("T")[0] : "",
     endDate: apiOrder.delivery_date ? apiOrder.delivery_date.split("T")[0] : "",
     karigar: apiOrder.karigar ? apiOrder.karigar.name : "",
-    status: apiOrder.active ? "Active" : "Completed",
+    status: apiOrder.active,
     customKarat: apiOrder.karat === "Other" ? apiOrder.karat : "",
   }));
 };
@@ -34,7 +34,7 @@ export const formatOrderToApi = (order, placedBy = "Admin123") => {
     delivery_date: order.endDate
       ? new Date(order.endDate).toISOString().split("T")[0]
       : null,
-    active: order.status === "Active",
+    active: order.status,
     order_images: order.images.map((image) => ({ images: image })),
   };
 };

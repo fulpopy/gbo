@@ -1,24 +1,33 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { ordersList } from "../constants/order";
-import { getOrders } from "../server/api";
+import { addOrders, getOrders } from "../server/api";
 import { parseOrderFromApi } from "../utils";
+import { UserContext } from "./UserContext";
 
 export const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
+  const { token, user } = useContext(UserContext);
 
   useEffect(() => {
-    const getAllOrders = async () => {
-      const res = await getOrders();
-      setOrders(parseOrderFromApi(res.data));
-    };
-    getAllOrders();
-  }, []);
+    if (token) {
+      const getAllOrders = async () => {
+        const res = await getOrders();
+        setOrders(parseOrderFromApi(res?.data));
+      };
+      getAllOrders();
+    }
+  }, [token]);
 
-  const addOrder = (newOrder) => {
+  const addOrder = async (newOrder) => {
     console.log("added new order: ", newOrder);
-    setOrders((prevOrders) => [...prevOrders, newOrder]);
+    const res = await addOrders(newOrder);
+    if (res.status === 201) {
+      setOrders((prevOrders) => [...prevOrders, newOrder]);
+    } else {
+      console.log("failed to add Order");
+    }
   };
 
   const updateOrder = (id, updatedOrder) => {
