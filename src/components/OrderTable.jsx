@@ -23,6 +23,12 @@ import { OrderContext, KarigarContext } from "../context";
 import { getBackgroundColor } from "../utils";
 import ImageDialog from "./ImageDialog";
 
+const commonCellStyle = {
+  textAlign: "center",
+  borderRight: "2px solid #d1d1d1",
+  "&:last-child": { borderRight: "none" }, // Remove border for the last cell
+};
+
 const OrderTable = ({ active }) => {
   const [currentOrders, setCurrentOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -35,11 +41,14 @@ const OrderTable = ({ active }) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
+    console.log(orders);
     let temp;
     if (active) {
-      temp = orders.filter((ele) => ele.status === 1 || ele.status === 2);
+      temp = orders?.filter(
+        (ele) => ele.status === "Active" || ele.status === "completed"
+      );
     } else {
-      temp = orders.filter((ele) => ele.status === 3);
+      temp = orders?.filter((ele) => ele.status === "received");
     }
     setCurrentOrders(temp);
     // console.log(orders);
@@ -62,10 +71,10 @@ const OrderTable = ({ active }) => {
     setSelectedImage(null);
   };
 
-  const filteredOrders = currentOrders.filter(
+  const filteredOrders = currentOrders?.filter(
     (order) =>
-      order.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.id.toString().includes(searchTerm)
+      order.product.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.order_id.toString().includes(searchTerm)
   );
   return (
     <>
@@ -84,7 +93,7 @@ const OrderTable = ({ active }) => {
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Search by Client or ID"
+          placeholder="Search by Product or ID"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{
@@ -104,20 +113,20 @@ const OrderTable = ({ active }) => {
             }}
           >
             <TableRow>
-              <TableCell sx={{ textAlign: "center" }}>id</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Client</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Karat</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Weight</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Image</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Description</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Date Placed</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>End Date</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Karigar</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Completed</TableCell>
+              <TableCell sx={commonCellStyle}>id</TableCell>
+              <TableCell sx={commonCellStyle}>Product</TableCell>
+              <TableCell sx={commonCellStyle}>Karat</TableCell>
+              <TableCell sx={commonCellStyle}>Lot Weight</TableCell>
+              <TableCell sx={commonCellStyle}>Images</TableCell>
+              <TableCell sx={commonCellStyle}>Description</TableCell>
+              <TableCell sx={commonCellStyle}>Placed Date</TableCell>
+              <TableCell sx={commonCellStyle}>Delivery Date</TableCell>
+              <TableCell sx={commonCellStyle}>Karigar</TableCell>
+              <TableCell sx={commonCellStyle}>Completed</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredOrders.map((order, index) => (
+            {filteredOrders?.map((order, index) => (
               <TableRow
                 key={order.id}
                 sx={{
@@ -130,21 +139,21 @@ const OrderTable = ({ active }) => {
                     cursor: "pointer",
                     textDecoration: "underline",
                     color: "blue",
-                    textAlign: "center",
+                    ...commonCellStyle,
                   }}
                 >
-                  {order.id}
+                  {order.order_id}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  {order.client}
-                </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  {order.karat}
-                </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  {order.weight}
-                </TableCell>
-                <TableCell sx={{ textAlign: "center", maxWidth: "250px" }}>
+                <TableCell sx={commonCellStyle}>{order.product}</TableCell>
+                <TableCell sx={commonCellStyle}>{order.karat}</TableCell>
+                <TableCell sx={commonCellStyle}>{order.lot_weight}</TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                    maxWidth: "250px",
+                    ...commonCellStyle,
+                  }}
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -152,7 +161,7 @@ const OrderTable = ({ active }) => {
                       maxHeight: "120px", // Set a fixed height to prevent row height from increasing
                     }}
                   >
-                    {order.images.map((image, idx) => (
+                    {order?.order_images?.map((image, idx) => (
                       <Box
                         key={idx}
                         sx={{
@@ -161,7 +170,7 @@ const OrderTable = ({ active }) => {
                         }}
                       >
                         <img
-                          src={image}
+                          src={image.imageUrl}
                           alt={`Order ${order.id}`}
                           style={{
                             // width: "100px", // Set the image width
@@ -169,39 +178,44 @@ const OrderTable = ({ active }) => {
                             objectFit: "cover", // Ensure the image fits within the box without stretching
                             cursor: "pointer",
                           }}
-                          onClick={() => handleImageClick(image)}
+                          onClick={() => handleImageClick(image.imageUrl)}
                         />
                       </Box>
                     ))}
                   </Box>
                 </TableCell>
 
-                <TableCell sx={{ textAlign: "center" }}>
-                  {order.description}
-                </TableCell>
-                <TableCell sx={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                  {new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  }).format(new Date(order.datePlaced))}
-                </TableCell>
+                <TableCell sx={commonCellStyle}>{order.description}</TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                     whiteSpace: "nowrap",
-                    backgroundColor: getBackgroundColor(order.endDate),
+                    ...commonCellStyle,
                   }}
                 >
                   {new Intl.DateTimeFormat("en-GB", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
-                  }).format(new Date(order.endDate))}
+                  }).format(new Date(order.placed_date))}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  {karigars.map((karigar) => {
-                    if (karigar.id === order.karigar) {
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                    whiteSpace: "nowrap",
+                    backgroundColor: getBackgroundColor(order.delivery_date),
+                    ...commonCellStyle,
+                  }}
+                >
+                  {new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }).format(new Date(order.delivery_date))}
+                </TableCell>
+                <TableCell sx={commonCellStyle}>
+                  {karigars?.map((karigar) => {
+                    if (karigar.id === order.karigar_id) {
                       return karigar.name;
                     }
                     return "";

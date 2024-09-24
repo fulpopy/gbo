@@ -21,17 +21,18 @@ import { uploadImagesYoS3 } from "../server/api";
 
 const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   const initialOrderData = {
-    client: "",
-    karat: "18K",
     product: "",
-    weight: "",
-    images: [],
+    customProduct: "",
+    karat: "18K",
+    karigar_id: undefined,
+    lot_weight: "",
     description: "",
-    datePlaced: "",
-    endDate: "",
-    karigar: "",
-    status: 1,
+    placed_date: "",
+    delivery_date: "",
+    images: [],
+    status: "Active",
     customKarat: "",
+    placed_by: "akash",
   };
 
   const { karigars } = useContext(KarigarContext);
@@ -44,21 +45,26 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
 
   useEffect(() => {
     if (order) {
+      const imageUrls = order.order_images.map((image) => image.imageUrl);
+      // console.log(order);
       setOrderData({
-        ...order,
-        datePlaced: order.datePlaced ? order.datePlaced : "",
-        endDate: order.endDate ? order.endDate : "",
+        ...initialOrderData, // Reset to initial data
+        ...order, // Spread the order data
+        images: imageUrls,
+        karigar_id: order.karigar_id || order.karigar.id, // Ensure karigar_id is set
+        placed_date: order.placed_date || "",
+        delivery_date: order.delivery_date || "",
       });
     }
   }, [order]);
 
   useEffect(() => {
     const isFormValid =
-      orderData.client &&
-      orderData.weight &&
-      orderData.datePlaced &&
-      orderData.endDate &&
-      orderData.karigar &&
+      orderData.lot_weight &&
+      orderData.placed_date &&
+      orderData.delivery_date &&
+      orderData.karigar_id &&
+      orderData.product &&
       (orderData.karat !== "other" || orderData.customKarat) &&
       (orderData.product !== "other" || orderData.customProduct);
 
@@ -98,17 +104,21 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   };
 
   const handleCreateOrUpdateOrder = async () => {
-    setLoading(true);
-    const uploadedImageUrls = await uploadImagesYoS3(imageFiles);
-    setLoading(false);
-    // console.log(uploadedImageUrls);
-    if (!uploadedImageUrls) {
-      console.log("Failed to upload images");
-      return;
+    let id = order ? order.order_id : Date.now();
+    let uploadedImageUrls = [];
+    if (imageFiles.length > 0) {
+      setLoading(true);
+      uploadedImageUrls = await uploadImagesYoS3(imageFiles, id);
+      setLoading(false);
+      if (!uploadedImageUrls) {
+        console.log("Failed to upload images");
+        handleClose();
+        return;
+      }
     }
 
     const currOrder = {
-      id: order ? order.id : Date.now(),
+      order_id: id,
       ...orderData,
       karat:
         orderData.karat === "other" ? orderData.customKarat : orderData.karat,
@@ -176,54 +186,6 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
         <form>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Client"
-                name="client"
-                value={orderData.client}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth margin="normal" required>
-                <InputLabel>Karat</InputLabel>
-                <Select
-                  name="karat"
-                  value={orderData.karat}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="18K">18K</MenuItem>
-                  <MenuItem value="20K">20K</MenuItem>
-                  <MenuItem value="22K">22K</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
-                </Select>
-              </FormControl>
-              {orderData.karat === "other" && (
-                <TextField
-                  fullWidth
-                  label="Custom Karat"
-                  name="customKarat"
-                  value={orderData.customKarat}
-                  onChange={handleChange}
-                  margin="normal"
-                  required
-                />
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Weight (g)"
-                name="weight"
-                value={orderData.weight}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
               <FormControl fullWidth margin="normal" required>
                 <InputLabel>Product</InputLabel>
                 <Select
@@ -252,13 +214,103 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
               )}
             </Grid>
             <Grid item xs={12} md={6}>
+              <FormControl fullWidth margin="normal" required>
+                <InputLabel>Karat</InputLabel>
+                <Select
+                  name="karat"
+                  value={orderData.karat}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="18K">18K</MenuItem>
+                  <MenuItem value="20K">20K</MenuItem>
+                  <MenuItem value="22K">22K</MenuItem>
+                  <MenuItem value="other">Other</MenuItem>
+                </Select>
+              </FormControl>
+              {orderData.karat === "other" && (
+                <TextField
+                  fullWidth
+                  label="Custom Karat"
+                  name="customKarat"
+                  value={orderData.customKarat}
+                  onChange={handleChange}
+                  margin="normal"
+                  required
+                />
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth margin="normal" required>
+                <InputLabel>Karigar</InputLabel>
+                <Select
+                  name="karigar_id"
+                  value={orderData.karigar_id || ""}
+                  onChange={handleChange}
+                >
+                  {karigars &&
+                    karigars.map((karigar) => (
+                      <MenuItem key={karigar.id} value={karigar.id}>
+                        {karigar.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Lot Weight"
+                name="lot_weight"
+                value={orderData.lot_weight}
+                onChange={handleChange}
+                margin="normal"
+                required
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                label="Description"
+                name="description"
+                value={orderData.description}
+                onChange={handleChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Date Placed"
+                name="placed_date"
+                value={orderData.placed_date}
+                onChange={handleChange}
+                margin="normal"
+                InputLabelProps={{ shrink: true }}
+                required
+              />
+              <TextField
+                fullWidth
+                type="date"
+                label="End Date"
+                name="delivery_date"
+                value={orderData.delivery_date}
+                onChange={handleChange}
+                margin="normal"
+                InputLabelProps={{ shrink: true }}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
               <Box
                 mt={1}
                 display="flex"
                 sx={{
                   overflowX: orderData.images.length === 0 ? "none" : "scroll",
-                  height: orderData.images.length === 0 ? "50px" : "130px",
                   bgcolor: "#f5f5f5",
+                  padding: "10px",
                 }}
               >
                 {orderData.images.length === 0 ? (
@@ -277,10 +329,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                   </Box>
                 ) : (
                   orderData.images.map((image, index) => (
-                    <Box
-                      key={index}
-                      sx={{ position: "relative", mr: 1, mb: 1 }}
-                    >
+                    <Box key={index} sx={{ position: "relative", mr: 1 }}>
                       <img
                         src={image}
                         alt={`Uploaded ${index}`}
@@ -300,7 +349,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                         }}
                       >
                         <CloseIcon
-                          sx={{ fontSize: "1rem", color: "rgb(0 0 0)" }}
+                          sx={{ fontSize: "0.8rem", color: "rgb(0 0 0)" }}
                         />
                       </IconButton>
                     </Box>
@@ -325,64 +374,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                 </Button>
               </FormControl>
             </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                multiline
-                rows={6}
-                label="Description"
-                name="description"
-                value={orderData.description}
-                onChange={handleChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="date"
-                label="Date Placed"
-                name="datePlaced"
-                value={orderData.datePlaced}
-                onChange={handleChange}
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="date"
-                label="End Date"
-                name="endDate"
-                value={orderData.endDate}
-                onChange={handleChange}
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth margin="normal" required>
-                <InputLabel>Karigar</InputLabel>
-                <Select
-                  name="karigar"
-                  value={orderData.karigar}
-                  onChange={handleChange}
-                >
-                  {karigars &&
-                    karigars.map((karigar) => (
-                      <MenuItem key={karigar.id} value={karigar.id}>
-                        {karigar.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            </Grid>
           </Grid>
-
           <Box
             mt={2}
             display="flex"

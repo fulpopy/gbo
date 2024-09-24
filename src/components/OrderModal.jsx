@@ -74,30 +74,10 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
               >
                 <Typography
                   sx={{ fontSize: "1.5rem", fontWeight: 700 }}
-                >{`Order#${order.id}`}</Typography>
+                >{`Order#${order.order_id}`}</Typography>
               </Box>
               <TableContainer component={Paper}>
                 <Table>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <Typography component="div" gutterBottom>
-                        Client
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      {order.client}
-                    </TableCell>
-                  </TableRow>
                   <TableRow>
                     <TableCell
                       align="center"
@@ -155,7 +135,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
                         border: "1px solid #ddd",
                       }}
                     >
-                      {order.weight}
+                      {order.lot_weight}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -199,7 +179,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
-                      }).format(new Date(order.datePlaced))}
+                      }).format(new Date(order.placed_date))}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -223,7 +203,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
-                      }).format(new Date(order.endDate))}
+                      }).format(new Date(order.delivery_date))}
                     </TableCell>
                   </TableRow>
                   <TableRow>

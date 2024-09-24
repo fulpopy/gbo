@@ -67,7 +67,7 @@ export const KarigarProvider = ({ children }) => {
     const res = await deleteKarigars(karigarId);
     if (res.status === 200) {
       setKarigars((prevKarigars) =>
-        prevKarigars.filter((karigar) => karigar.id !== karigarId)
+        prevKarigars?.filter((karigar) => karigar.id !== karigarId)
       );
       setAlertMessage("Karigar deleted successfully!");
       setAlertSeverity("success");

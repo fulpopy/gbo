@@ -1,11 +1,10 @@
 import axios from "axios";
-import { formatOrderToApi } from "../utils";
 
 const URL = "http://localhost:3001";
 export const login = async (user) => {
   try {
     let res = await axios.post(`${URL}/api/auth/signin`, user);
-    return res.data;
+    return res?.data;
   } catch (error) {
     console.log(error);
   }
@@ -14,7 +13,7 @@ export const login = async (user) => {
 export const signup = async (user) => {
   try {
     let res = await axios.post(`${URL}/api/auth/signup`, user);
-    return res.data;
+    return res?.data;
   } catch (error) {
     console.log(error);
   }
@@ -94,7 +93,7 @@ export const getOrders = async () => {
   }
 };
 
-export const uploadImagesYoS3 = async (images) => {
+export const uploadImagesYoS3 = async (images, id) => {
   // const token = localStorage.getItem("accessToken");
   // const header = {
   //   headers: { "x-access-token": token },
@@ -104,13 +103,14 @@ export const uploadImagesYoS3 = async (images) => {
   images.forEach((image) => {
     formData.append("images", image);
   });
-
+  formData.append("order_id", id)
   try {
+    console.log(formData);
     const response = await axios.post(`${URL}/api/images/upload`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log("Image URLs:", response.data);
-    return response.data;
+    console.log("Image URLs:", response?.data);
+    return response?.data;
   } catch (error) {
     console.error("Error uploading images:", error);
   }
@@ -123,11 +123,7 @@ export const addOrders = async (newOrder, user) => {
   };
   console.log(newOrder, user);
   try {
-    let res = await axios.post(
-      `${URL}/api/orders`,
-      formatOrderToApi(newOrder, user),
-      header
-    );
+    let res = await axios.post(`${URL}/api/orders`, newOrder, header);
     return res;
   } catch (error) {
     console.log(error.message);

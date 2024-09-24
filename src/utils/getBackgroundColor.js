@@ -1,6 +1,6 @@
-const getBackgroundColor = (endDate) => {
+const getBackgroundColor = (delivery_date) => {
   const today = new Date().setHours(0, 0, 0, 0);
-  const dueDate = new Date(endDate).setHours(0, 0, 0, 0);
+  const dueDate = new Date(delivery_date).setHours(0, 0, 0, 0);
   const diffTime = dueDate - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 

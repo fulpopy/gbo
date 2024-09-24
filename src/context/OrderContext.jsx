@@ -14,7 +14,7 @@ export const OrderProvider = ({ children }) => {
     if (token) {
       const getAllOrders = async () => {
         const res = await getOrders();
-        setOrders(parseOrderFromApi(res?.data));
+        setOrders(res?.data);
       };
       getAllOrders();
     }
@@ -24,7 +24,8 @@ export const OrderProvider = ({ children }) => {
     console.log("added new order: ", newOrder);
     const res = await addOrders(newOrder);
     if (res.status === 201) {
-      setOrders((prevOrders) => [...prevOrders, newOrder]);
+      setOrders((prevOrders) => [...prevOrders, res?.data]);
+      console.log(orders);
     } else {
       console.log("failed to add Order");
     }
@@ -43,7 +44,7 @@ export const OrderProvider = ({ children }) => {
     console.log(`Deleted order#${orderId}`);
     console.log(orderId);
     setOrders((prevOrders) =>
-      prevOrders.filter((order) => order.id !== orderId)
+      prevOrders?.filter((order) => order.id !== orderId)
     );
   };
 

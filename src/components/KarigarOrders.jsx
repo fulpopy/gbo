@@ -107,7 +107,9 @@ const KarigarOrders = () => {
                             height: "150px",
                             width: "210px",
                             border: "5px solid",
-                            borderColor: getBackgroundColor(order.endDate),
+                            borderColor: getBackgroundColor(
+                              order.delivery_date
+                            ),
                             background:
                               order.karat === "18K"
                                 ? "#f9a8d4"
@@ -121,14 +123,11 @@ const KarigarOrders = () => {
                           onClick={() => handleCardClick(order)} // Handle card click
                         >
                           <CardContent>
-                            <Typography component="div">
-                              {order.client}
-                            </Typography>
                             <Typography variant="body2" color="text.secondary">
                               Karat: {order.karat}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              Weight: {order.weight}
+                              Weight: {order.lot_weight}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                               Product: {order.product}
@@ -139,7 +138,7 @@ const KarigarOrders = () => {
                                 day: "2-digit",
                                 month: "short",
                                 year: "numeric",
-                              }).format(new Date(order.datePlaced))}
+                              }).format(new Date(order.placed_date))}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                               End Date:
@@ -147,7 +146,7 @@ const KarigarOrders = () => {
                                 day: "2-digit",
                                 month: "short",
                                 year: "numeric",
-                              }).format(new Date(order.endDate))}
+                              }).format(new Date(order.delivery_date))}
                             </Typography>
                           </CardContent>
                         </Card>
