@@ -54,10 +54,15 @@ const KarigarForm = ({ openKarigarForm, handleCloseKarigarForm, karigar }) => {
     setKarigarData(initialKarigarData);
   };
 
+  const handleClose = () => {
+    setKarigarData(initialKarigarData);
+    handleCloseKarigarForm();
+  };
+
   return (
     <Modal
       open={openKarigarForm}
-      onClose={handleCloseKarigarForm}
+      onClose={handleClose}
       aria-labelledby="karigar-modal-title"
       aria-describedby="karigar-modal-description"
     >
@@ -76,7 +81,7 @@ const KarigarForm = ({ openKarigarForm, handleCloseKarigarForm, karigar }) => {
       >
         <IconButton
           sx={{ position: "absolute", top: 8, right: 8 }}
-          onClick={handleCloseKarigarForm}
+          onClick={handleClose}
         >
           <CloseIcon />
         </IconButton>

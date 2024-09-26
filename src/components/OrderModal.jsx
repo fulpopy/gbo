@@ -15,19 +15,20 @@ import {
 import React, { useContext, useState } from "react";
 import OrderForm from "./OrderForm";
 import { OrderContext, KarigarContext } from "../context";
-import ConfirmChangeStatus from "./ConfirmChangeStatus";
+import ConfirmDialog from "./ConfirmDialog";
 
-function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
+function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
   const [openForm, setOpenForm] = useState(false);
   const [openConfirmStatus, setOpenConfirmStatus] = useState(false);
-  const { orders, deleteOrder } = useContext(OrderContext);
-  const { karigars } = useContext(KarigarContext);
+  const [openConfirm, setOpenConfirm] = useState(false);
+
+  const { deleteOrder, updateOrder } = useContext(OrderContext);
   const handleEdit = () => {
     setOpenForm(true);
   };
 
   const handleDelete = () => {
-    deleteOrder(order.id); // Ensure this id is correct and exists in your orders state
+    deleteOrder(order.order_id); // Ensure this id is correct and exists in your orders state
     handleCloseModal(); // Close the modal after deleting
   };
   const handleClickOpen = () => {
@@ -36,6 +37,22 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
 
   const handleClose = () => {
     setOpenConfirmStatus(false);
+  };
+
+  const handleOpenStatusChange = (order) => {
+    setOpenConfirm(true);
+  };
+  const handleCloseOpenConfirm = () => {
+    setOpenConfirm(false);
+  };
+  const handleStatusChange = async () => {
+    const updatedOrder = {
+      ...order,
+      status: "receive",
+    };
+    await updateOrder(updatedOrder);
+    setOpenConfirm(false);
+    handleCloseModal();
   };
 
   return (
@@ -234,31 +251,32 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder, active }) {
               </TableContainer>
 
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={handleClickOpen}
-                  sx={{
-                    borderColor: "green",
-                    color: "green",
-                    backgroundColor: "transparent",
-                    mr: 1,
-                    cursor: "pointer",
-                    "&:hover": {
-                      borderColor: "darkgreen",
-                      color: "white",
-                    },
-                  }}
-                >
-                  Order Received
-                </Button>
-                <ConfirmChangeStatus
-                  open={openConfirmStatus}
-                  handleClose={handleClose}
-                  selectedOrder={order}
-                  setSelectedOrder={setOrder}
-                  active={active}
-                  handleCloseModal={handleCloseModal}
+                {order.status !== "receive" && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handleOpenStatusChange}
+                    sx={{
+                      borderColor: "green",
+                      color: "green",
+                      backgroundColor: "transparent",
+                      mr: 1,
+                      cursor: "pointer",
+                      "&:hover": {
+                        borderColor: "darkgreen",
+                        color: "white",
+                      },
+                    }}
+                  >
+                    Order Received
+                  </Button>
+                )}
+                <ConfirmDialog
+                  openConfirm={openConfirm}
+                  handleCloseOpenConfirm={handleCloseOpenConfirm}
+                  confirmation={handleStatusChange}
+                  title="Do you want to change the status?"
+                  info="If marked as received, find the order in history tab."
                 />
                 <Button
                   variant="contained"

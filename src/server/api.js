@@ -93,26 +93,47 @@ export const getOrders = async () => {
   }
 };
 
-export const uploadImagesYoS3 = async (images, id) => {
-  // const token = localStorage.getItem("accessToken");
-  // const header = {
-  //   headers: { "x-access-token": token },
-  // };
+export const uploadImagesToS3 = async (images, id) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token, "Content-Type": "multipart/form-data" },
+  };
   const formData = new FormData();
 
   images.forEach((image) => {
     formData.append("images", image);
   });
-  formData.append("order_id", id)
+  formData.append("order_id", id);
   try {
-    console.log(formData);
-    const response = await axios.post(`${URL}/api/images/upload`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const response = await axios.post(
+      `${URL}/api/images/upload`,
+      formData,
+      header
+    );
     console.log("Image URLs:", response?.data);
     return response?.data;
   } catch (error) {
     console.error("Error uploading images:", error);
+  }
+};
+
+export const deleteImageFromS3 = async (imageUrls) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
+  console.log(imageUrls);
+  try {
+    const response = await axios.post(
+      `${URL}/api/images/delete`,
+      imageUrls,
+      header
+    );
+    console.log("Image deleted:", response?.data);
+    return response?.data;
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    return null;
   }
 };
 
@@ -124,6 +145,38 @@ export const addOrders = async (newOrder, user) => {
   console.log(newOrder, user);
   try {
     let res = await axios.post(`${URL}/api/orders`, newOrder, header);
+    return res;
+  } catch (error) {
+    console.log(error.message);
+    return { status: 400 };
+  }
+};
+
+export const updateOrders = async (order) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
+  try {
+    let res = await axios.put(
+      `${URL}/api/orders/${order.order_id}`,
+      order,
+      header
+    );
+    return res;
+  } catch (error) {
+    console.log(error.message);
+    return { status: 400 };
+  }
+};
+
+export const deleteOrders = async (order_id) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
+  try {
+    let res = await axios.delete(`${URL}/api/orders/${order_id}`, header);
     return res;
   } catch (error) {
     console.log(error.message);

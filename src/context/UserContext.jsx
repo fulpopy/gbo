@@ -4,10 +4,10 @@ import React, { createContext, useState, useEffect } from "react";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   useEffect(() => {
     const savedToken = localStorage.getItem("accessToken");
+    const username = localStorage.getItem("username");
     if (savedToken) {
       setToken(savedToken);
     }
@@ -15,21 +15,21 @@ export const UserProvider = ({ children }) => {
 
   // Function to log in and store the token
   const login = (userData, token) => {
-    setUser(userData);
     setToken(token);
     localStorage.setItem("accessToken", token); // Save token in localStorage
+    localStorage.setItem("username", userData.username);
   };
 
   // Function to log out
   const logout = () => {
-    setUser(null);
     setToken(null);
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("username");
   };
 
   // Provide the token, login, and logout functions to other components
   return (
-    <UserContext.Provider value={{ user, token, login, logout }}>
+    <UserContext.Provider value={{ token, login, logout }}>
       {children}
     </UserContext.Provider>
   );

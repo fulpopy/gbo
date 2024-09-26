@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { ordersList } from "../constants/order";
-import { addOrders, getOrders } from "../server/api";
+import {
+  addOrders,
+  deleteOrders,
+  getOrders,
+  updateOrders,
+} from "../server/api";
 import { parseOrderFromApi } from "../utils";
 import { UserContext } from "./UserContext";
 
@@ -8,7 +12,7 @@ export const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
-  const { token, user } = useContext(UserContext);
+  const { token } = useContext(UserContext);
 
   useEffect(() => {
     if (token) {
@@ -22,7 +26,8 @@ export const OrderProvider = ({ children }) => {
 
   const addOrder = async (newOrder) => {
     console.log("added new order: ", newOrder);
-    const res = await addOrders(newOrder);
+    const username = localStorage.getItem("username");
+    const res = await addOrders(newOrder, username);
     if (res.status === 201) {
       setOrders((prevOrders) => [...prevOrders, res?.data]);
       console.log(orders);
@@ -31,21 +36,29 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  const updateOrder = (id, updatedOrder) => {
-    console.log(`Updated order#${id}: `, updatedOrder);
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === id ? { ...order, ...updatedOrder } : order
-      )
-    );
+  const updateOrder = async (updatedOrder) => {
+    const res = await updateOrders(updatedOrder);
+    if (res.status === 200) {
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.order_id === updatedOrder.order_id
+            ? { ...res.data.order }
+            : order
+        )
+      );
+    } else {
+      console.log("error");
+    }
   };
-
-  const deleteOrder = (orderId) => {
-    console.log(`Deleted order#${orderId}`);
-    console.log(orderId);
-    setOrders((prevOrders) =>
-      prevOrders?.filter((order) => order.id !== orderId)
-    );
+  const deleteOrder = async (order_id) => {
+    const res = await deleteOrders(order_id);
+    if (res.status === 200) {
+      setOrders((prevOrders) =>
+        prevOrders?.filter((order) => order.order_id !== order_id)
+      );
+    } else {
+      console.log("error");
+    }
   };
 
   return (

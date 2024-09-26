@@ -22,6 +22,7 @@ import OrderModal from "./OrderModal";
 import { OrderContext, KarigarContext } from "../context";
 import { getBackgroundColor } from "../utils";
 import ImageDialog from "./ImageDialog";
+import ConfirmDialog from "./ConfirmDialog";
 
 const commonCellStyle = {
   textAlign: "center",
@@ -33,26 +34,26 @@ const OrderTable = ({ active }) => {
   const [currentOrders, setCurrentOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { orders } = useContext(OrderContext);
+  const { orders, updateOrder } = useContext(OrderContext);
   const { karigars } = useContext(KarigarContext);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
-    console.log(orders);
     let temp;
     if (active) {
       temp = orders?.filter(
-        (ele) => ele.status === "Active" || ele.status === "completed"
+        (ele) => ele.status === "active" || ele.status === "complete"
       );
     } else {
-      temp = orders?.filter((ele) => ele.status === "received");
+      temp = orders?.filter((ele) => ele.status === "receive");
     }
     setCurrentOrders(temp);
-    // console.log(orders);
-  }, [orders]);
+  }, [orders, active]);
 
   const handleCardClick = (order) => {
     setSelectedOrder(order);
@@ -69,6 +70,29 @@ const OrderTable = ({ active }) => {
   const handleCloseImageModal = () => {
     setImageModalOpen(false);
     setSelectedImage(null);
+  };
+
+  const handleOpenStatusChange = (order) => {
+    setSelectedOrder(order);
+    setOpenConfirm(true);
+  };
+  const handleCloseOpenConfirm = () => {
+    setSelectedOrder(null);
+    setOpenConfirm(false);
+  };
+
+  const handleStatusChange = async () => {
+    const updatedOrder = {
+      ...selectedOrder,
+      status:
+        selectedOrder.status === "complete" ||
+        selectedOrder.status === "receive"
+          ? "active"
+          : "complete",
+    };
+    await updateOrder(updatedOrder);
+    setOpenConfirm(false);
+    setSelectedOrder(null);
   };
 
   const filteredOrders = currentOrders?.filter(
@@ -122,13 +146,13 @@ const OrderTable = ({ active }) => {
               <TableCell sx={commonCellStyle}>Placed Date</TableCell>
               <TableCell sx={commonCellStyle}>Delivery Date</TableCell>
               <TableCell sx={commonCellStyle}>Karigar</TableCell>
-              <TableCell sx={commonCellStyle}>Completed</TableCell>
+              <TableCell sx={commonCellStyle}>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredOrders?.map((order, index) => (
               <TableRow
-                key={order.id}
+                key={order.order_id}
                 sx={{
                   backgroundColor: index % 2 === 0 ? "#f5f5f5" : "#ffffff",
                 }}
@@ -171,7 +195,7 @@ const OrderTable = ({ active }) => {
                       >
                         <img
                           src={image.imageUrl}
-                          alt={`Order ${order.id}`}
+                          alt={`Order ${order.order_id}`}
                           style={{
                             // width: "100px", // Set the image width
                             height: "90px", // Set a fixed image height to keep it consistent
@@ -228,31 +252,25 @@ const OrderTable = ({ active }) => {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  <Tooltip
-                    title={
-                      active
-                        ? "Once the status is changed, you will find the order in the history tab."
-                        : "Once the status is changed, you will find the order in the Active tab."
-                    }
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    onClick={() => handleOpenStatusChange(order)}
+                    sx={{
+                      borderColor: "green",
+                      color: "green",
+                      backgroundColor: "transparent",
+                      cursor: "pointer",
+                      "&:hover": {
+                        borderColor: "darkgreen",
+                        color: "darkgreen",
+                      },
+                    }}
                   >
-                    <Button
-                      variant="outlined"
-                      color="success"
-                      // onClick={() => handleClickOpen(order)}
-                      sx={{
-                        borderColor: "green",
-                        color: "green",
-                        backgroundColor: "transparent",
-                        cursor: "pointer",
-                        "&:hover": {
-                          borderColor: "darkgreen",
-                          color: "darkgreen",
-                        },
-                      }}
-                    >
-                      Mark as Complete
-                    </Button>
-                  </Tooltip>
+                    {order.status === "complete" || order.status === "receive"
+                      ? "Mark as Active"
+                      : "Mark as Complete"}
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -270,6 +288,18 @@ const OrderTable = ({ active }) => {
         setOrder={setSelectedOrder}
         handleCloseModal={handleCloseModal}
         active={active}
+      />
+      <ConfirmDialog
+        openConfirm={openConfirm}
+        handleCloseOpenConfirm={handleCloseOpenConfirm}
+        confirmation={handleStatusChange}
+        title="Do you want to change the status?"
+        info={
+          selectedOrder?.status === "complete" ||
+          selectedOrder?.status === "receive"
+            ? `Mark the order with id ${selectedOrder?.order_id} as Active`
+            : `Mark the order with id ${selectedOrder?.order_id} as Complete`
+        }
       />
     </>
   );

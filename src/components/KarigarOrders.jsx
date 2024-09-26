@@ -12,7 +12,6 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import { ordersList } from "../constants/order";
 import { OrderContext, KarigarContext } from "../context";
 import OrderModal from "./OrderModal";
 import { getBackgroundColor } from "../utils";

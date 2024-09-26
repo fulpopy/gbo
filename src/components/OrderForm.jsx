@@ -17,7 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { OrderContext, KarigarContext } from "../context";
 import { products } from "../constants/products";
-import { uploadImagesYoS3 } from "../server/api";
+import { uploadImagesToS3, deleteImageFromS3 } from "../server/api";
 
 const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   const initialOrderData = {
@@ -30,7 +30,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
     placed_date: "",
     delivery_date: "",
     images: [],
-    status: "Active",
+    status: "active",
     customKarat: "",
     placed_by: "akash",
   };
@@ -39,19 +39,19 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   const { addOrder, updateOrder } = useContext(OrderContext);
 
   const [orderData, setOrderData] = useState(initialOrderData);
-  const [imageFiles, setImageFiles] = useState([]); // To hold file objects for S3 upload
+  const [imageFiles, setImageFiles] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (order) {
       const imageUrls = order.order_images.map((image) => image.imageUrl);
-      // console.log(order);
       setOrderData({
-        ...initialOrderData, // Reset to initial data
-        ...order, // Spread the order data
+        ...initialOrderData,
+        ...order,
         images: imageUrls,
-        karigar_id: order.karigar_id || order.karigar.id, // Ensure karigar_id is set
+        karigar_id: order.karigar_id || order.karigar.id,
         placed_date: order.placed_date || "",
         delivery_date: order.delivery_date || "",
       });
@@ -96,11 +96,20 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   };
 
   const removeImage = (index) => {
+    const imageToRemove = orderData.images[index];
+    if (imageToRemove?.startsWith("blob:")) {
+      // Remove from new image uploads (blob URL)
+      setImageFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    } else {
+      // Track the S3 image URL to delete from S3
+      setDeletedImages((prevDeleted) => [...prevDeleted, imageToRemove]);
+    }
+
+    // Remove the image from the UI
     setOrderData((prevState) => ({
       ...prevState,
-      images: prevState.images.filter((_, imgIndex) => imgIndex !== index),
+      images: prevState.images.filter((_, i) => i !== index),
     }));
-    setImageFiles(imageFiles.filter((_, imgIndex) => imgIndex !== index));
   };
 
   const handleCreateOrUpdateOrder = async () => {
@@ -108,7 +117,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
     let uploadedImageUrls = [];
     if (imageFiles.length > 0) {
       setLoading(true);
-      uploadedImageUrls = await uploadImagesYoS3(imageFiles, id);
+      uploadedImageUrls = await uploadImagesToS3(imageFiles, id);
       setLoading(false);
       if (!uploadedImageUrls) {
         console.log("Failed to upload images");
@@ -116,6 +125,14 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
         return;
       }
     }
+
+    // Remove images from S3
+    if (deletedImages.length > 0) {
+      await deleteImageFromS3(deletedImages);
+    }
+    const filteredImages = orderData.images.filter(
+      (image) => !image?.startsWith("blob")
+    );
 
     const currOrder = {
       order_id: id,
@@ -126,23 +143,14 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
         orderData.product === "other"
           ? orderData.customProduct
           : orderData.product,
-      images: uploadedImageUrls, // Use the uploaded S3 image URLs
+      images: [...filteredImages, ...uploadedImageUrls],
     };
-
     if (order) {
-      if (order.karigar !== orderData.karigar) {
-        // removeTaskFromKarigar(order.karigar, order.id);
-        // addTaskToKarigar(orderData.karigar, order.id);
-      }
-      updateOrder(order.id, currOrder);
-    } else {
-      await addOrder(currOrder);
-      // addTaskToKarigar(orderData.karigar, currOrder.id);
-    }
-
-    if (order) {
+      await updateOrder(currOrder);
       setOrder(currOrder);
       handleCloseModal();
+    } else {
+      await addOrder(currOrder);
     }
 
     handleClose();
@@ -336,7 +344,9 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                         style={{ width: 100, height: 100, objectFit: "cover" }}
                       />
                       <IconButton
-                        onClick={() => removeImage(index)}
+                        onClick={() =>
+                          removeImage(index, imageFiles.includes(image))
+                        }
                         sx={{
                           position: "absolute",
                           top: 0,

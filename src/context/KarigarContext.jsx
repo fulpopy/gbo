@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
-import { tempKarigars } from "../constants/karigars";
 import {
   addKarigars,
   deleteKarigars,
