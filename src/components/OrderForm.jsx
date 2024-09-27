@@ -47,6 +47,11 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   useEffect(() => {
     if (order) {
       const imageUrls = order.order_images.map((image) => image.imageUrl);
+
+      // Check if the current karat or product is custom (not predefined)
+      const isCustomKarat = !["18K", "20K", "22K"].includes(order.karat);
+      const isCustomProduct = !products.includes(order.product);
+
       setOrderData({
         ...initialOrderData,
         ...order,
@@ -54,6 +59,10 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
         karigar_id: order.karigar_id || order.karigar.id,
         placed_date: order.placed_date || "",
         delivery_date: order.delivery_date || "",
+        customKarat: isCustomKarat ? order.karat : "", // If custom, set it in customKarat
+        karat: isCustomKarat ? "other" : order.karat, // Set 'other' for custom values
+        customProduct: isCustomProduct ? order.product : "", // Same for customProduct
+        product: isCustomProduct ? "other" : order.product, // Set 'other' for custom products
       });
     }
   }, [order]);
@@ -98,14 +107,11 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
   const removeImage = (index) => {
     const imageToRemove = orderData.images[index];
     if (imageToRemove?.startsWith("blob:")) {
-      // Remove from new image uploads (blob URL)
       setImageFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
     } else {
-      // Track the S3 image URL to delete from S3
       setDeletedImages((prevDeleted) => [...prevDeleted, imageToRemove]);
     }
 
-    // Remove the image from the UI
     setOrderData((prevState) => ({
       ...prevState,
       images: prevState.images.filter((_, i) => i !== index),
@@ -120,7 +126,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
       uploadedImageUrls = await uploadImagesToS3(imageFiles, id);
       setLoading(false);
       if (!uploadedImageUrls) {
-        console.log("Failed to upload images");
+        alert("Failed to upload images");
         handleClose();
         return;
       }
@@ -210,15 +216,21 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                 </Select>
               </FormControl>
               {orderData.product === "other" && (
-                <TextField
-                  fullWidth
-                  label="Custom product"
-                  name="customProduct"
-                  value={orderData.customProduct}
-                  onChange={handleChange}
-                  margin="normal"
-                  required
-                />
+                <>
+                  <TextField
+                    fullWidth
+                    label="Custom product"
+                    name="customProduct"
+                    value={orderData.customProduct}
+                    onChange={handleChange}
+                    margin="normal"
+                    required
+                    inputProps={{ maxLength: 200 }}
+                  />
+                  <Typography variant="body2" color="textSecondary">
+                    {`${orderData.customProduct.length}/200`}
+                  </Typography>
+                </>
               )}
             </Grid>
             <Grid item xs={12} md={6}>
@@ -236,15 +248,21 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                 </Select>
               </FormControl>
               {orderData.karat === "other" && (
-                <TextField
-                  fullWidth
-                  label="Custom Karat"
-                  name="customKarat"
-                  value={orderData.customKarat}
-                  onChange={handleChange}
-                  margin="normal"
-                  required
-                />
+                <>
+                  <TextField
+                    fullWidth
+                    label="Custom Karat"
+                    name="customKarat"
+                    value={orderData.customKarat}
+                    onChange={handleChange}
+                    margin="normal"
+                    required
+                    inputProps={{ maxLength: 20 }}
+                  />
+                  <Typography variant="body2" color="textSecondary">
+                    {`${orderData.customKarat.length}/20`}
+                  </Typography>
+                </>
               )}
             </Grid>
             <Grid item xs={12} md={6}>
@@ -273,7 +291,11 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                 onChange={handleChange}
                 margin="normal"
                 required
+                inputProps={{ maxLength: 20 }}
               />
+              <Typography variant="body2" color="textSecondary">
+                {`${orderData.lot_weight.length}/20`}
+              </Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
@@ -285,7 +307,12 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                 value={orderData.description}
                 onChange={handleChange}
                 margin="normal"
+                inputProps={{ maxLength: 200 }} // Limit to 200 characters
+                required
               />
+              <Typography variant="body2" color="textSecondary">
+                {`${orderData.description.length}/200`}
+              </Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField

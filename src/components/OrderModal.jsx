@@ -10,48 +10,65 @@ import {
   TableRow,
   Typography,
   Paper,
-  TableHead,
+  Grid,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import OrderForm from "./OrderForm";
-import { OrderContext, KarigarContext } from "../context";
+import { OrderContext } from "../context";
 import ConfirmDialog from "./ConfirmDialog";
+import ImageDialog from "./ImageDialog";
 
 function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
   const [openForm, setOpenForm] = useState(false);
-  const [openConfirmStatus, setOpenConfirmStatus] = useState(false);
-  const [openConfirm, setOpenConfirm] = useState(false);
+  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
+  const [openConfirmReceive, setOpenConfirmReceive] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const { deleteOrder, updateOrder } = useContext(OrderContext);
+
   const handleEdit = () => {
     setOpenForm(true);
   };
 
-  const handleDelete = () => {
-    deleteOrder(order.order_id); // Ensure this id is correct and exists in your orders state
-    handleCloseModal(); // Close the modal after deleting
-  };
-  const handleClickOpen = () => {
-    setOpenConfirmStatus(true);
+  const handleOpenConfirmDelete = () => {
+    setOpenConfirmDelete(true);
   };
 
-  const handleClose = () => {
-    setOpenConfirmStatus(false);
+  const handleCloseOpenConfirmDelete = () => {
+    setOpenConfirmDelete(false);
   };
 
-  const handleOpenStatusChange = (order) => {
-    setOpenConfirm(true);
+  const handleConfirmDelete = async () => {
+    await deleteOrder(order.order_id);
+    setOpenConfirmDelete(false);
+    handleCloseModal();
   };
-  const handleCloseOpenConfirm = () => {
-    setOpenConfirm(false);
+
+  const handleOpenConfirmReceive = () => {
+    setOpenConfirmReceive(true);
   };
-  const handleStatusChange = async () => {
+
+  const handleCloseOpenConfirmReceive = () => {
+    setOpenConfirmReceive(false);
+  };
+
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setImageModalOpen(true);
+  };
+  const handleCloseImageModal = () => {
+    setImageModalOpen(false);
+    setSelectedImage(null);
+  };
+
+  const handleConfirmReceive = async () => {
     const updatedOrder = {
       ...order,
       status: "receive",
     };
     await updateOrder(updatedOrder);
-    setOpenConfirm(false);
+    setOpenConfirmReceive(false);
     handleCloseModal();
   };
 
@@ -84,178 +101,187 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
           </IconButton>
           {order && (
             <>
-              <Box
-                style={{
-                  padding: "10px",
-                }}
-              >
-                <Typography
-                  sx={{ fontSize: "1.5rem", fontWeight: 700 }}
-                >{`Order#${order.order_id}`}</Typography>
-              </Box>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <Typography component="div" gutterBottom>
-                        Product
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      {order.product}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <Typography component="div" gutterBottom>
-                        Karat
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      {order.karat}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <Typography component="div" gutterBottom>
-                        Weight
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      {order.lot_weight}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <Typography component="div" gutterBottom>
-                        Description
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      {order.description}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <Typography component="div" gutterBottom>
-                        Date Placed
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      {new Intl.DateTimeFormat("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      }).format(new Date(order.placed_date))}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <Typography component="div" gutterBottom>
-                        End Date
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      {new Intl.DateTimeFormat("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      }).format(new Date(order.delivery_date))}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <Typography component="div" gutterBottom>
-                        Status
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      {order.status === 1
-                        ? "Active"
-                        : order.status === 2
-                        ? "Completed"
-                        : "Received"}
-                    </TableCell>
-                  </TableRow>
-                </Table>
-              </TableContainer>
+              <Typography sx={{ fontSize: "1.5rem", fontWeight: 700 }}>
+                {`Order#${order.order_id}`}
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableRow>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          <Typography component="div" gutterBottom>
+                            Product
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          {order.product}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          <Typography component="div" gutterBottom>
+                            Karat
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          {order.karat}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          <Typography component="div" gutterBottom>
+                            Weight
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          {order.lot_weight}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          <Typography component="div" gutterBottom>
+                            Description
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          {order.description}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          <Typography component="div" gutterBottom>
+                            Date Placed
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          {new Intl.DateTimeFormat("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }).format(new Date(order.placed_date))}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          <Typography component="div" gutterBottom>
+                            End Date
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          {new Intl.DateTimeFormat("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }).format(new Date(order.delivery_date))}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          <Typography component="div" gutterBottom>
+                            Status
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ border: "1px solid #ddd" }}
+                        >
+                          {order.status === "active"
+                            ? "Active"
+                            : order.status === "complete"
+                            ? "Completed"
+                            : "Received"}
+                        </TableCell>
+                      </TableRow>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Box sx={{ textAlign: "center" }}>
+                    <Typography variant="h6">Images</Typography>
+                    {order.order_images?.length > 0 ? (
+                      <Grid
+                        container
+                        spacing={2}
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        {order.order_images.map((image, index) => (
+                          <Grid item key={index} xs={4} md={6}>
+                            <img
+                              onClick={() => handleImageClick(image.imageUrl)}
+                              src={image.imageUrl}
+                              alt={`order_image_${index}`}
+                              style={{
+                                width: "100%",
+                                height: "auto",
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                                border: "1px solid #ddd",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    ) : (
+                      <Typography>No Images</Typography>
+                    )}
+                    <ImageDialog
+                      imageModalOpen={imageModalOpen}
+                      handleCloseImageModal={handleCloseImageModal}
+                      selectedImage={selectedImage}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+              {/* End Grid Layout */}
 
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                 {order.status !== "receive" && (
                   <Button
                     variant="contained"
                     color="success"
-                    onClick={handleOpenStatusChange}
+                    onClick={handleOpenConfirmReceive}
                     sx={{
                       borderColor: "green",
                       color: "green",
@@ -272,11 +298,11 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                   </Button>
                 )}
                 <ConfirmDialog
-                  openConfirm={openConfirm}
-                  handleCloseOpenConfirm={handleCloseOpenConfirm}
-                  confirmation={handleStatusChange}
+                  openConfirm={openConfirmReceive}
+                  handleCloseOpenConfirm={handleCloseOpenConfirmReceive}
+                  confirmation={handleConfirmReceive}
                   title="Do you want to change the status?"
-                  info="If marked as received, find the order in history tab."
+                  info="If marked as received, find the order in the history tab."
                 />
                 <Button
                   variant="contained"
@@ -289,16 +315,23 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                 <Button
                   variant="contained"
                   color="error"
-                  onClick={handleDelete}
+                  onClick={handleOpenConfirmDelete}
                 >
                   Delete
                 </Button>
+                <ConfirmDialog
+                  openConfirm={openConfirmDelete}
+                  handleCloseOpenConfirm={handleCloseOpenConfirmDelete}
+                  confirmation={handleConfirmDelete}
+                  title="Do you want to delete the order?"
+                  info="This action cannot be undone."
+                />
               </Box>
             </>
           )}
         </Box>
       </Modal>
-      {/* Only render the OrderForm if openForm is true */}
+
       {openForm && (
         <OrderForm
           open={openForm}

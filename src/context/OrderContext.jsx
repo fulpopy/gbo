@@ -5,7 +5,7 @@ import {
   getOrders,
   updateOrders,
 } from "../server/api";
-import { parseOrderFromApi } from "../utils";
+import AlertSnackbar from "../components/AlertSnackbar";
 import { UserContext } from "./UserContext";
 
 export const OrderContext = createContext();
@@ -13,6 +13,9 @@ export const OrderContext = createContext();
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const { token } = useContext(UserContext);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("success");
 
   useEffect(() => {
     if (token) {
@@ -30,9 +33,13 @@ export const OrderProvider = ({ children }) => {
     const res = await addOrders(newOrder, username);
     if (res.status === 201) {
       setOrders((prevOrders) => [...prevOrders, res?.data]);
-      console.log(orders);
+      setAlertMessage("Order added successfully!");
+      setAlertSeverity("success");
+      setAlertOpen(true);
     } else {
-      console.log("failed to add Order");
+      setAlertMessage(`Failed to add Order.`);
+      setAlertSeverity("error");
+      setAlertOpen(true);
     }
   };
 
@@ -46,8 +53,13 @@ export const OrderProvider = ({ children }) => {
             : order
         )
       );
+      setAlertMessage("Order updated successfully!");
+      setAlertSeverity("success");
+      setAlertOpen(true);
     } else {
-      console.log("error");
+      setAlertMessage(`Failed to Update Order.`);
+      setAlertSeverity("error");
+      setAlertOpen(true);
     }
   };
   const deleteOrder = async (order_id) => {
@@ -56,8 +68,13 @@ export const OrderProvider = ({ children }) => {
       setOrders((prevOrders) =>
         prevOrders?.filter((order) => order.order_id !== order_id)
       );
+      setAlertMessage("Order deleted successfully!");
+      setAlertSeverity("success");
+      setAlertOpen(true);
     } else {
-      console.log("error");
+      setAlertMessage(`Failed to delete Order.`);
+      setAlertSeverity("error");
+      setAlertOpen(true);
     }
   };
 
@@ -66,6 +83,12 @@ export const OrderProvider = ({ children }) => {
       value={{ orders, addOrder, updateOrder, deleteOrder }}
     >
       {children}
+      <AlertSnackbar
+        alertOpen={alertOpen}
+        alertSeverity={alertSeverity}
+        alertMessage={alertMessage}
+        setAlertOpen={setAlertOpen}
+      />
     </OrderContext.Provider>
   );
 };

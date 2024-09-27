@@ -1,5 +1,7 @@
 // context/UserContext.js
 import React, { createContext, useState, useEffect } from "react";
+import { Snackbar, SnackbarContent, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const UserContext = createContext();
 
