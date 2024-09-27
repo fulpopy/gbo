@@ -56,7 +56,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
         ...initialOrderData,
         ...order,
         images: imageUrls,
-        karigar_id: order.karigar_id || order.karigar.id,
+        karigar_id: order.karigar_id || order.karigar?.id,
         placed_date: order.placed_date || "",
         delivery_date: order.delivery_date || "",
         customKarat: isCustomKarat ? order.karat : "", // If custom, set it in customKarat
@@ -275,7 +275,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                 >
                   {karigars &&
                     karigars.map((karigar) => (
-                      <MenuItem key={karigar.id} value={karigar.id}>
+                      <MenuItem key={karigar?.id} value={karigar?.id}>
                         {karigar.name}
                       </MenuItem>
                     ))}

@@ -67,9 +67,16 @@ function Header() {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ backgroundColor: "#2E2E2E" }}>
         <Container maxWidth="xl">
-          <Toolbar disableGutters>
+          <Toolbar
+            disableGutters
+            sx={{
+              minHeight: { xs: "46px", md: "46px !important" }, // Ensuring the height is consistent for both mobile and desktop
+              px: { xs: 2, md: 3 }, // Adjust padding if needed to maintain spacing
+              maxHeight: "50px",
+            }}
+          >
             <Box
               component="img"
               src={logo}
