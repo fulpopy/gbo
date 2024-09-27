@@ -211,7 +211,7 @@ const KarigarProductOrders = () => {
         <StyledTableContainer>
           <Table stickyHeader aria-label="orders table">
             <TableHead>
-              <TableRow sx={{ height: "50px" }}>
+              <TableRow>
                 <StyledTableCell
                   sx={{
                     width: "200px",
