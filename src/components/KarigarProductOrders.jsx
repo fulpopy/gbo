@@ -51,7 +51,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledCard = styled(Card)(({ theme }) => ({
   minWidth: 200,
-  marginBottom: theme.spacing(2),
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
   backgroundColor: "#FFFAF0", // Floral white
   border: "1px solid #D4AF37", // Gold border
@@ -145,7 +144,6 @@ const KarigarProductOrders = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 1,
           }}
         >
           <Typography
