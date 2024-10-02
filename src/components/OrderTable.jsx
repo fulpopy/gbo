@@ -21,12 +21,6 @@ import ImageDialog from "./ImageDialog";
 import ConfirmDialog from "./ConfirmDialog";
 import { Search as SearchIcon } from "lucide-react";
 
-// const blink = keyframes`
-//   0% { opacity: 0; }
-//   50% { opacity: 1; }
-//   100% { opacity: 0; }
-// `;
-
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
 }));
@@ -40,17 +34,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const StyledTableContainer = styled(TableContainer)({
   maxHeight: "calc(100vh - 200px)",
   overflow: "auto",
-  // "&::-webkit-scrollbar": {
-  //   width: "8px",
-  //   height: "8px",
-  // },
-  // "&::-webkit-scrollbar-track": {
-  //   backgroundColor: "#f1f1f1",
-  // },
-  // "&::-webkit-scrollbar-thumb": {
-  //   backgroundColor: "#D4AF37",
-  //   borderRadius: "4px",
-  // },
 });
 
 const StyledTable = styled(Table)({
@@ -74,54 +57,14 @@ const StyledHeaderCell = styled(StyledTableCell)(({ theme }) => ({
   zIndex: 2,
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledTableRow = styled(TableRow)(({ theme, status }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#FFF8E1",
+    backgroundColor: status === "complete" ? "#2e2e2e" : "#FFF8E1",
   },
   "&:nth-of-type(even)": {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: status === "complete" ? "#2e2e2e" : "#FFFFFF",
   },
-  // "&:hover": {
-  //   backgroundColor: theme.palette.action.hover,
-  // },
-}));
-
-// const StyledChip = styled(Chip)(({ theme, karat }) => ({
-//   backgroundColor:
-//     karat === "18K"
-//       ? "#f9a8d4"
-//       : karat === "20K"
-//       ? "#a5f3fc"
-//       : karat === "22K"
-//       ? "#d6d3d1"
-//       : "transparent",
-//   border: "1px solid #D4AF37",
-//   padding: theme.spacing(0.5, 1),
-//   "& .MuiChip-label": {
-//     padding: 0,
-//   },
-//   "&::before": {
-//     content: '""',
-//     display: "inline-block",
-//     width: "8px",
-//     height: "8px",
-//     borderRadius: "50%",
-//     backgroundColor: "black",
-//     marginRight: "6px",
-//     animation: `${blink} 1.5s infinite`,
-//   },
-// }));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  borderColor: "green",
-  color: "green",
-  backgroundColor: "transparent",
-  cursor: "pointer",
-  "&:hover": {
-    borderColor: "darkgreen",
-    color: "darkgreen",
-    backgroundColor: "rgba(0, 128, 0, 0.1)",
-  },
+  color: status === "complete" ? "#FFFFFF" : "inherit",
 }));
 
 const OrderTable = ({ active }) => {
@@ -194,6 +137,7 @@ const OrderTable = ({ active }) => {
     setOpenConfirmReceive(false);
     setSelectedOrder(null);
   };
+
   const handleStatusChange = async () => {
     const updatedOrder = {
       ...selectedOrder,
@@ -274,23 +218,32 @@ const OrderTable = ({ active }) => {
             </TableHead>
             <TableBody>
               {filteredOrders?.map((order, index) => (
-                <StyledTableRow key={order.order_id}>
+                <StyledTableRow key={order.order_id} status={order.status}>
                   <StyledTableCell
                     onClick={() => handleCardClick(order)}
                     sx={{
                       cursor: "pointer",
                       textDecoration: "underline",
-                      color: "primary.main",
+                      color: order.status === "complete" && "#FFFFFF",
                     }}
                   >
                     {order.order_id}
                   </StyledTableCell>
-                  <StyledTableCell>{order.product}</StyledTableCell>
-                  <StyledTableCell>
-                    {order.karat}
-                    {/* <StyledChip label={order.karat} karat={order.karat} /> */}
+                  <StyledTableCell
+                    sx={{ color: order.status === "complete" && "#FFFFFF" }}
+                  >
+                    {order.product}
                   </StyledTableCell>
-                  <StyledTableCell>{order.lot_weight}</StyledTableCell>
+                  <StyledTableCell
+                    sx={{ color: order.status === "complete" && "#FFFFFF" }}
+                  >
+                    {order.karat}
+                  </StyledTableCell>
+                  <StyledTableCell
+                    sx={{ color: order.status === "complete" && "#FFFFFF" }}
+                  >
+                    {order.lot_weight}
+                  </StyledTableCell>
                   <StyledTableCell
                     sx={{
                       textAlign: "center",
@@ -327,11 +280,16 @@ const OrderTable = ({ active }) => {
                       ))}
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell>{order.description}</StyledTableCell>
+                  <StyledTableCell
+                    sx={{ color: order.status === "complete" && "#FFFFFF" }}
+                  >
+                    {order.description}
+                  </StyledTableCell>
                   <StyledTableCell
                     sx={{
                       textAlign: "center",
                       whiteSpace: "nowrap",
+                      color: order.status === "complete" && "#FFFFFF",
                     }}
                   >
                     {new Intl.DateTimeFormat("en-GB", {
@@ -345,6 +303,7 @@ const OrderTable = ({ active }) => {
                       textAlign: "center",
                       whiteSpace: "nowrap",
                       backgroundColor: getBackgroundColor(order.delivery_date),
+                      color: order.status === "complete" && "#FFFFFF",
                     }}
                   >
                     {new Intl.DateTimeFormat("en-GB", {
@@ -353,7 +312,9 @@ const OrderTable = ({ active }) => {
                       year: "numeric",
                     }).format(new Date(order.delivery_date))}
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell
+                    sx={{ color: order.status === "complete" && "#FFFFFF" }}
+                  >
                     {karigars?.find(
                       (karigar) => karigar.id === order.karigar_id
                     )?.name || ""}
@@ -364,11 +325,16 @@ const OrderTable = ({ active }) => {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    <StyledButton
+                    <Button
                       sx={{
                         display: "block",
                         width: "100%",
                         marginBottom: "16px",
+                        backgroundColor:
+                          order.status === "complete" && "#FFFFFF",
+                        "&:hover": {
+                          backgroundColor: "#FFFFFF",
+                        },
                       }}
                       variant="outlined"
                       onClick={() => handleOpenStatusChange(order)}
@@ -376,7 +342,7 @@ const OrderTable = ({ active }) => {
                       {order.status === "complete" || order.status === "receive"
                         ? "Mark as Active"
                         : "Mark as Complete"}
-                    </StyledButton>
+                    </Button>
                     {order.status !== "receive" && (
                       <Button
                         variant="contained"
@@ -386,8 +352,6 @@ const OrderTable = ({ active }) => {
                           display: "block",
                           width: "100%",
                           borderColor: "green",
-                          color: "green",
-                          backgroundColor: "transparent",
                           mr: 1,
                           cursor: "pointer",
                           "&:hover": {
@@ -399,13 +363,6 @@ const OrderTable = ({ active }) => {
                         Received
                       </Button>
                     )}
-                    <ConfirmDialog
-                      openConfirm={openConfirmReceive}
-                      handleCloseOpenConfirm={handleCloseOpenConfirmReceive}
-                      confirmation={handleConfirmReceive}
-                      title="Do you want to change the status?"
-                      info="If marked as received, find the order in the history tab."
-                    />
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
@@ -436,6 +393,13 @@ const OrderTable = ({ active }) => {
             ? `Mark the order with id ${selectedOrder?.order_id} as Active`
             : `Mark the order with id ${selectedOrder?.order_id} as Complete`
         }
+      />
+      <ConfirmDialog
+        openConfirm={openConfirmReceive}
+        handleCloseOpenConfirm={handleCloseOpenConfirmReceive}
+        confirmation={handleConfirmReceive}
+        title="Do you want to change the status?"
+        info="If marked as received, find the order in the history tab."
       />
     </StyledBox>
   );

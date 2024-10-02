@@ -84,15 +84,8 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const StyledChip = styled(Chip)(({ theme, karat }) => ({
-  backgroundColor:
-    karat === "18K"
-      ? "#f9a8d4"
-      : karat === "20K"
-      ? "#a5f3fc"
-      : karat === "22K"
-      ? "#d6d3d1"
-      : "transparent",
+const StyledChip = styled(Chip)(({ theme, date }) => ({
+  backgroundColor: getBackgroundColor(date),
   border: "1px solid #D4AF37",
   padding: theme.spacing(0.5, 1),
   "& .MuiChip-label": {
@@ -162,7 +155,16 @@ const KarigarProductOrders = () => {
     <StyledCard
       key={order.order_id}
       onClick={() => handleCardClick(order)}
-      sx={{ backgroundColor: getBackgroundColor(order.delivery_date) }}
+      sx={{
+        backgroundColor:
+          order.karat === "18K"
+            ? "#f9a8d4"
+            : order.karat === "20K"
+            ? "#a5f3fc"
+            : order.karat === "22K"
+            ? "#d6d3d1"
+            : "transparent",
+      }}
     >
       <CardContent>
         <Box
@@ -182,7 +184,7 @@ const KarigarProductOrders = () => {
           <StyledChip
             label={order.status === "active" ? "Active" : "Complete"}
             size="small"
-            karat={order.karat}
+            date={order.delivery_date}
           />
         </Box>
         <Typography variant="body2">Lot Weight: {order.lot_weight}</Typography>

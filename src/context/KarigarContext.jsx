@@ -28,7 +28,6 @@ export const KarigarProvider = ({ children }) => {
   }, [token]);
 
   const addKarigar = async (newKarigar) => {
-    // console.log("added new karigar: ", newKarigar);
     const res = await addKarigars(newKarigar);
     if (res.status === 201) {
       setKarigars((prevKarigars) => [...prevKarigars, res.data]);
