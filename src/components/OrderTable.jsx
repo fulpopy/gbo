@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Typography,
   Box,
@@ -10,25 +10,119 @@ import {
   TableContainer,
   Paper,
   TextField,
-  Grid,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Tooltip,
+  Chip,
 } from "@mui/material";
+import { styled, keyframes } from "@mui/material/styles";
 import OrderModal from "./OrderModal";
 import { OrderContext, KarigarContext } from "../context";
 import { getBackgroundColor } from "../utils";
 import ImageDialog from "./ImageDialog";
 import ConfirmDialog from "./ConfirmDialog";
+import { Search as SearchIcon } from "lucide-react";
 
-const commonCellStyle = {
+// const blink = keyframes`
+//   0% { opacity: 0; }
+//   50% { opacity: 1; }
+//   100% { opacity: 0; }
+// `;
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(3),
+}));
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  borderRadius: "5px",
+  overflow: "hidden",
+  boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+}));
+
+const StyledTableContainer = styled(TableContainer)({
+  maxHeight: "calc(100vh - 200px)",
+  overflow: "auto",
+  // "&::-webkit-scrollbar": {
+  //   width: "8px",
+  //   height: "8px",
+  // },
+  // "&::-webkit-scrollbar-track": {
+  //   backgroundColor: "#f1f1f1",
+  // },
+  // "&::-webkit-scrollbar-thumb": {
+  //   backgroundColor: "#D4AF37",
+  //   borderRadius: "4px",
+  // },
+});
+
+const StyledTable = styled(Table)({
+  borderCollapse: "separate",
+  borderSpacing: 0,
+});
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: "center",
-  borderRight: "2px solid #d1d1d1",
-  "&:last-child": { borderRight: "none" }, // Remove border for the last cell
-};
+  borderRight: "1px solid #d1d1d1",
+  padding: theme.spacing(1.5),
+  "&:last-child": { borderRight: "none" },
+}));
+
+const StyledHeaderCell = styled(StyledTableCell)(({ theme }) => ({
+  fontWeight: "bold",
+  backgroundColor: "#D4AF37",
+  color: theme.palette.getContrastText("#D4AF37"),
+  position: "sticky",
+  top: 0,
+  zIndex: 2,
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: "#FFF8E1",
+  },
+  "&:nth-of-type(even)": {
+    backgroundColor: "#FFFFFF",
+  },
+  // "&:hover": {
+  //   backgroundColor: theme.palette.action.hover,
+  // },
+}));
+
+// const StyledChip = styled(Chip)(({ theme, karat }) => ({
+//   backgroundColor:
+//     karat === "18K"
+//       ? "#f9a8d4"
+//       : karat === "20K"
+//       ? "#a5f3fc"
+//       : karat === "22K"
+//       ? "#d6d3d1"
+//       : "transparent",
+//   border: "1px solid #D4AF37",
+//   padding: theme.spacing(0.5, 1),
+//   "& .MuiChip-label": {
+//     padding: 0,
+//   },
+//   "&::before": {
+//     content: '""',
+//     display: "inline-block",
+//     width: "8px",
+//     height: "8px",
+//     borderRadius: "50%",
+//     backgroundColor: "black",
+//     marginRight: "6px",
+//     animation: `${blink} 1.5s infinite`,
+//   },
+// }));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  borderColor: "green",
+  color: "green",
+  backgroundColor: "transparent",
+  cursor: "pointer",
+  "&:hover": {
+    borderColor: "darkgreen",
+    color: "darkgreen",
+    backgroundColor: "rgba(0, 128, 0, 0.1)",
+  },
+}));
 
 const OrderTable = ({ active }) => {
   const [currentOrders, setCurrentOrders] = useState([]);
@@ -37,21 +131,16 @@ const OrderTable = ({ active }) => {
   const { orders, updateOrder } = useContext(OrderContext);
   const { karigars } = useContext(KarigarContext);
   const [searchTerm, setSearchTerm] = useState("");
-
   const [openConfirm, setOpenConfirm] = useState(false);
-
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
-    let temp;
-    if (active) {
-      temp = orders?.filter(
-        (ele) => ele.status === "active" || ele.status === "complete"
-      );
-    } else {
-      temp = orders?.filter((ele) => ele.status === "receive");
-    }
+    const temp = orders?.filter((ele) =>
+      active
+        ? ele.status === "active" || ele.status === "complete"
+        : ele.status === "receive"
+    );
     setCurrentOrders(temp);
   }, [orders, active]);
 
@@ -59,14 +148,17 @@ const OrderTable = ({ active }) => {
     setSelectedOrder(order);
     setModalOpen(true);
   };
+
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedOrder(null);
   };
+
   const handleImageClick = (image) => {
     setSelectedImage(image);
     setImageModalOpen(true);
   };
+
   const handleCloseImageModal = () => {
     setImageModalOpen(false);
     setSelectedImage(null);
@@ -76,6 +168,7 @@ const OrderTable = ({ active }) => {
     setSelectedOrder(order);
     setOpenConfirm(true);
   };
+
   const handleCloseOpenConfirm = () => {
     setSelectedOrder(null);
     setOpenConfirm(false);
@@ -100,183 +193,167 @@ const OrderTable = ({ active }) => {
       order.product.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.order_id.toString().includes(searchTerm)
   );
+
   return (
-    <>
+    <StyledBox>
       <Box
-        style={{
+        sx={{
           borderBottom: "2px solid #d1d1d1",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           padding: "10px",
+          marginBottom: 2,
         }}
       >
-        <Typography sx={{ fontSize: "1.5rem", fontWeight: "700" }}>
+        <Typography variant="h5" sx={{ fontWeight: "700" }}>
           {active ? "Active Orders" : "Received Orders"}
         </Typography>
-        <TextField
-          variant="outlined"
-          size="small"
-          placeholder="Search by Product or ID"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{
-            width: "300px",
-          }}
-        />
-      </Box>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead
+        <Box sx={{ position: "relative", width: "300px" }}>
+          <SearchIcon
+            size={20}
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "10px",
+              transform: "translateY(-50%)",
+              color: "rgba(0, 0, 0, 0.54)",
+            }}
+          />
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search by Product or ID"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth
             sx={{
-              "& th": {
-                borderBottom: "2px solid black",
-                fontSize: "1.1rem",
-                fontWeight: 500,
+              "& .MuiOutlinedInput-root": {
+                paddingLeft: "35px",
               },
             }}
-          >
-            <TableRow>
-              <TableCell sx={commonCellStyle}>id</TableCell>
-              <TableCell sx={commonCellStyle}>Product</TableCell>
-              <TableCell sx={commonCellStyle}>Karat</TableCell>
-              <TableCell sx={commonCellStyle}>Lot Weight</TableCell>
-              <TableCell sx={commonCellStyle}>Images</TableCell>
-              <TableCell sx={commonCellStyle}>Description</TableCell>
-              <TableCell sx={commonCellStyle}>Placed Date</TableCell>
-              <TableCell sx={commonCellStyle}>Delivery Date</TableCell>
-              <TableCell sx={commonCellStyle}>Karigar</TableCell>
-              <TableCell sx={commonCellStyle}>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredOrders?.map((order, index) => (
-              <TableRow
-                key={order.order_id}
-                sx={{
-                  backgroundColor: index % 2 === 0 ? "#f5f5f5" : "#ffffff",
-                }}
-              >
-                <TableCell
-                  onClick={() => handleCardClick(order)}
-                  sx={{
-                    cursor: "pointer",
-                    textDecoration: "underline",
-                    color: "blue",
-                    ...commonCellStyle,
-                  }}
-                >
-                  {order.order_id}
-                </TableCell>
-                <TableCell sx={commonCellStyle}>{order.product}</TableCell>
-                <TableCell sx={commonCellStyle}>{order.karat}</TableCell>
-                <TableCell sx={commonCellStyle}>{order.lot_weight}</TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                    maxWidth: "250px",
-                    ...commonCellStyle,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      overflowX: "auto", // Enable horizontal scrolling
-                      maxHeight: "120px", // Set a fixed height to prevent row height from increasing
-                    }}
-                  >
-                    {order?.order_images?.map((image, idx) => (
-                      <Box
-                        key={idx}
-                        sx={{
-                          flexShrink: 0, // Prevent images from shrinking
-                          marginRight: "8px", // Space between images
-                        }}
-                      >
-                        <img
-                          src={image.imageUrl}
-                          alt={`Order ${order.order_id}`}
-                          style={{
-                            // width: "100px", // Set the image width
-                            height: "90px", // Set a fixed image height to keep it consistent
-                            objectFit: "cover", // Ensure the image fits within the box without stretching
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleImageClick(image.imageUrl)}
-                        />
-                      </Box>
-                    ))}
-                  </Box>
-                </TableCell>
-
-                <TableCell sx={commonCellStyle}>{order.description}</TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                    whiteSpace: "nowrap",
-                    ...commonCellStyle,
-                  }}
-                >
-                  {new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  }).format(new Date(order.placed_date))}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                    whiteSpace: "nowrap",
-                    backgroundColor: getBackgroundColor(order.delivery_date),
-                    ...commonCellStyle,
-                  }}
-                >
-                  {new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  }).format(new Date(order.delivery_date))}
-                </TableCell>
-                <TableCell sx={commonCellStyle}>
-                  {karigars?.map((karigar) => {
-                    if (karigar.id === order.karigar_id) {
-                      return karigar.name;
-                    }
-                    return "";
-                  })}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                    maxWidth: "fit-content",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  <Button
-                    variant="outlined"
-                    color="success"
-                    onClick={() => handleOpenStatusChange(order)}
-                    sx={{
-                      borderColor: "green",
-                      color: "green",
-                      backgroundColor: "transparent",
-                      cursor: "pointer",
-                      "&:hover": {
-                        borderColor: "darkgreen",
-                        color: "darkgreen",
-                      },
-                    }}
-                  >
-                    {order.status === "complete" || order.status === "receive"
-                      ? "Mark as Active"
-                      : "Mark as Complete"}
-                  </Button>
-                </TableCell>
+          />
+        </Box>
+      </Box>
+      <StyledPaper>
+        <StyledTableContainer>
+          <StyledTable stickyHeader>
+            <TableHead>
+              <TableRow>
+                <StyledHeaderCell>ID</StyledHeaderCell>
+                <StyledHeaderCell>Product</StyledHeaderCell>
+                <StyledHeaderCell>Karat</StyledHeaderCell>
+                <StyledHeaderCell>Lot Weight</StyledHeaderCell>
+                <StyledHeaderCell>Images</StyledHeaderCell>
+                <StyledHeaderCell>Description</StyledHeaderCell>
+                <StyledHeaderCell>Placed Date</StyledHeaderCell>
+                <StyledHeaderCell>Delivery Date</StyledHeaderCell>
+                <StyledHeaderCell>Karigar</StyledHeaderCell>
+                <StyledHeaderCell>Status</StyledHeaderCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {filteredOrders?.map((order, index) => (
+                <StyledTableRow key={order.order_id}>
+                  <StyledTableCell
+                    onClick={() => handleCardClick(order)}
+                    sx={{
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      color: "primary.main",
+                    }}
+                  >
+                    {order.order_id}
+                  </StyledTableCell>
+                  <StyledTableCell>{order.product}</StyledTableCell>
+                  <StyledTableCell>
+                    {order.karat}
+                    {/* <StyledChip label={order.karat} karat={order.karat} /> */}
+                  </StyledTableCell>
+                  <StyledTableCell>{order.lot_weight}</StyledTableCell>
+                  <StyledTableCell
+                    sx={{
+                      textAlign: "center",
+                      maxWidth: "250px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        overflowX: "auto",
+                        maxHeight: "120px",
+                      }}
+                    >
+                      {order?.order_images?.map((image, idx) => (
+                        <Box
+                          key={idx}
+                          sx={{
+                            flexShrink: 0,
+                            marginRight: 1,
+                          }}
+                        >
+                          <img
+                            src={image.imageUrl}
+                            alt={`Order ${order.order_id}`}
+                            style={{
+                              height: "90px",
+                              objectFit: "cover",
+                              cursor: "pointer",
+                              borderRadius: "4px",
+                            }}
+                            onClick={() => handleImageClick(image.imageUrl)}
+                          />
+                        </Box>
+                      ))}
+                    </Box>
+                  </StyledTableCell>
+                  <StyledTableCell>{order.description}</StyledTableCell>
+                  <StyledTableCell
+                    sx={{
+                      textAlign: "center",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {new Intl.DateTimeFormat("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    }).format(new Date(order.placed_date))}
+                  </StyledTableCell>
+                  <StyledTableCell
+                    sx={{
+                      textAlign: "center",
+                      whiteSpace: "nowrap",
+                      backgroundColor: getBackgroundColor(order.delivery_date),
+                    }}
+                  >
+                    {new Intl.DateTimeFormat("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    }).format(new Date(order.delivery_date))}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {karigars?.find(
+                      (karigar) => karigar.id === order.karigar_id
+                    )?.name || ""}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledButton
+                      variant="outlined"
+                      onClick={() => handleOpenStatusChange(order)}
+                    >
+                      {order.status === "complete" || order.status === "receive"
+                        ? "Mark as Active"
+                        : "Mark as Complete"}
+                    </StyledButton>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </StyledTable>
+        </StyledTableContainer>
+      </StyledPaper>
       <ImageDialog
         imageModalOpen={imageModalOpen}
         handleCloseImageModal={handleCloseImageModal}
@@ -301,7 +378,7 @@ const OrderTable = ({ active }) => {
             : `Mark the order with id ${selectedOrder?.order_id} as Complete`
         }
       />
-    </>
+    </StyledBox>
   );
 };
 

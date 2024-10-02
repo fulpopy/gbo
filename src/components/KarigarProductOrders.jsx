@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo } from "react";
+import React, { useState, useContext, useMemo, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -16,44 +16,55 @@ import {
   Chip,
 } from "@mui/material";
 import { styled, keyframes } from "@mui/material/styles";
-import { OrderContext, KarigarContext } from "../context";
+import { OrderContext } from "../context";
 import { products } from "../constants/products";
 import OrderModal from "./OrderModal";
+import { getBackgroundColor } from "../utils";
 
-// Keyframes for blinking effect
 const blink = keyframes`
   0% { opacity: 0; }
   50% { opacity: 1; }
   100% { opacity: 0; }
 `;
 
-// Styled components
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
-  // backgroundColor: "#FFF8E1", // Light gold background
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   borderRadius: "5px",
   overflow: "hidden",
-  boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)", // Soft gold shadow
+  boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
 }));
 
 const StyledTableContainer = styled(TableContainer)({
   maxHeight: "calc(100vh - 200px)",
+  overflow: "auto",
 });
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   fontWeight: "bold",
-  backgroundColor: "#D4AF37", // Gold color
+  backgroundColor: "#D4AF37",
   color: theme.palette.getContrastText("#D4AF37"),
+  position: "sticky",
+  left: 0,
+  zIndex: 2,
+}));
+
+const StyledHeaderCell = styled(TableCell)(({ theme }) => ({
+  fontWeight: "bold",
+  backgroundColor: "#D4AF37",
+  color: theme.palette.getContrastText("#D4AF37"),
+  position: "sticky",
+  top: 0,
+  zIndex: 3,
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
   minWidth: 200,
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-  backgroundColor: "#FFFAF0", // Floral white
-  border: "1px solid #D4AF37", // Gold border
+  backgroundColor: "#FFFAF0",
+  border: "1px solid #D4AF37",
   "&:hover": {
     transform: "translateY(-2px)",
     boxShadow: "0 6px 20px rgba(212, 175, 55, 0.15)",
@@ -73,10 +84,16 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const StyledChip = styled(Chip)(({ theme }) => ({
-  backgroundColor: "transparent",
+const StyledChip = styled(Chip)(({ theme, karat }) => ({
+  backgroundColor:
+    karat === "18K"
+      ? "#f9a8d4"
+      : karat === "20K"
+      ? "#a5f3fc"
+      : karat === "22K"
+      ? "#d6d3d1"
+      : "transparent",
   border: "1px solid #D4AF37",
-  // color: "#D4AF37",
   padding: theme.spacing(0.5, 1),
   "& .MuiChip-label": {
     padding: 0,
@@ -98,15 +115,20 @@ const KarigarProductOrders = () => {
   const { orders } = useContext(OrderContext);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
-  const filteredOrders = orders.filter(
-    (order) => order.status === "active" || order.status === "complete"
-  );
+  useEffect(() => {
+    const newFilteredOrders =
+      orders?.filter(
+        (order) => order.status === "active" || order.status === "complete"
+      ) || [];
+    setFilteredOrders(newFilteredOrders);
+  }, [orders]);
 
   const karigarOrders = useMemo(() => {
     const ordersByKarigar = {};
     filteredOrders.forEach((order) => {
-      const karigarName = order.karigar ? order.karigar.name : "Not Assigned";
+      const karigarName = order.karigar ? order?.karigar?.name : "Not Assigned";
       if (!ordersByKarigar[karigarName]) {
         ordersByKarigar[karigarName] = [];
       }
@@ -137,7 +159,11 @@ const KarigarProductOrders = () => {
   };
 
   const renderOrderCard = (order) => (
-    <StyledCard key={order.order_id} onClick={() => handleCardClick(order)}>
+    <StyledCard
+      key={order.order_id}
+      onClick={() => handleCardClick(order)}
+      sx={{ backgroundColor: getBackgroundColor(order.delivery_date) }}
+    >
       <CardContent>
         <Box
           sx={{
@@ -150,17 +176,17 @@ const KarigarProductOrders = () => {
             variant="subtitle1"
             sx={{ fontWeight: "bold", marginRight: "5px" }}
           >
-            {showKarigarView ? order.product : order.karigar.name}
+            {showKarigarView ? order.product : order?.karigar?.name}
           </Typography>
 
           <StyledChip
             label={order.status === "active" ? "Active" : "Complete"}
             size="small"
+            karat={order.karat}
           />
         </Box>
         <Typography variant="body2">Lot Weight: {order.lot_weight}</Typography>
         {/* <Typography variant="body2">Karat: {order.karat}</Typography> */}
-        {/* <Typography variant="body2">Product: {order.product}</Typography> */}
         <Typography variant="body2">
           Placed:{" "}
           {new Intl.DateTimeFormat("en-GB", {
@@ -212,21 +238,23 @@ const KarigarProductOrders = () => {
           <Table stickyHeader aria-label="orders table">
             <TableHead>
               <TableRow>
-                <StyledTableCell
+                <StyledHeaderCell
                   sx={{
                     width: "200px",
                     textAlign: "center",
+                    left: 0,
+                    zIndex: 4,
                   }}
                 >
                   <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     {showKarigarView ? "Karigar Name" : "Product"}
                   </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
+                </StyledHeaderCell>
+                <StyledHeaderCell>
                   <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     Orders
                   </Typography>
-                </StyledTableCell>
+                </StyledHeaderCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -240,21 +268,20 @@ const KarigarProductOrders = () => {
                             index % 2 === 0 ? "#FFF8E1" : "inherit",
                         }}
                       >
-                        <TableCell
+                        <StyledTableCell
                           component="th"
                           scope="row"
                           sx={{ width: "200px", textAlign: "center" }}
                         >
                           <Typography variant="h6">{karigarName}</Typography>
-                        </TableCell>
+                        </StyledTableCell>
                         <TableCell>
                           <Box
                             sx={{
                               display: "flex",
-                              // flexWrap: "wrap",
                               gap: 2,
-                              maxHeight: 300,
-                              // overflowY: "auto",
+                              overflowX: "auto",
+                              paddingBottom: 2,
                             }}
                           >
                             {orders.map(renderOrderCard)}
@@ -274,21 +301,20 @@ const KarigarProductOrders = () => {
                             index % 2 === 0 ? "#FFF8E1" : "inherit",
                         }}
                       >
-                        <TableCell
+                        <StyledTableCell
                           component="th"
                           scope="row"
                           sx={{ width: "200px", textAlign: "center" }}
                         >
                           <Typography variant="subtitle2">{product}</Typography>
-                        </TableCell>
+                        </StyledTableCell>
                         <TableCell>
                           <Box
                             sx={{
                               display: "flex",
-                              // flexWrap: "wrap",
                               gap: 2,
-                              maxHeight: 300,
-                              // overflowY: "auto",
+                              overflowX: "auto",
+                              paddingBottom: 2,
                             }}
                           >
                             {productOrderList.map(renderOrderCard)}
