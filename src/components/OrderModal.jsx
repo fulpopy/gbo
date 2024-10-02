@@ -21,7 +21,6 @@ import ImageDialog from "./ImageDialog";
 function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
   const [openForm, setOpenForm] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
-  const [openConfirmReceive, setOpenConfirmReceive] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -45,14 +44,6 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
     handleCloseModal();
   };
 
-  const handleOpenConfirmReceive = () => {
-    setOpenConfirmReceive(true);
-  };
-
-  const handleCloseOpenConfirmReceive = () => {
-    setOpenConfirmReceive(false);
-  };
-
   const handleImageClick = (image) => {
     setSelectedImage(image);
     setImageModalOpen(true);
@@ -60,16 +51,6 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
   const handleCloseImageModal = () => {
     setImageModalOpen(false);
     setSelectedImage(null);
-  };
-
-  const handleConfirmReceive = async () => {
-    const updatedOrder = {
-      ...order,
-      status: "receive",
-    };
-    await updateOrder(updatedOrder);
-    setOpenConfirmReceive(false);
-    handleCloseModal();
   };
 
   return (
@@ -277,33 +258,6 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
               {/* End Grid Layout */}
 
               <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-                {order.status !== "receive" && (
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={handleOpenConfirmReceive}
-                    sx={{
-                      borderColor: "green",
-                      color: "green",
-                      backgroundColor: "transparent",
-                      mr: 1,
-                      cursor: "pointer",
-                      "&:hover": {
-                        borderColor: "darkgreen",
-                        color: "white",
-                      },
-                    }}
-                  >
-                    Order Received
-                  </Button>
-                )}
-                <ConfirmDialog
-                  openConfirm={openConfirmReceive}
-                  handleCloseOpenConfirm={handleCloseOpenConfirmReceive}
-                  confirmation={handleConfirmReceive}
-                  title="Do you want to change the status?"
-                  info="If marked as received, find the order in the history tab."
-                />
                 <Button
                   variant="contained"
                   color="primary"

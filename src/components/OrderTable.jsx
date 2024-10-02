@@ -134,6 +134,7 @@ const OrderTable = ({ active }) => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [openConfirmReceive, setOpenConfirmReceive] = useState(false);
 
   useEffect(() => {
     const temp = orders?.filter((ele) =>
@@ -174,6 +175,25 @@ const OrderTable = ({ active }) => {
     setOpenConfirm(false);
   };
 
+  const handleOpenConfirmReceive = (order) => {
+    setSelectedOrder(order);
+    setOpenConfirmReceive(true);
+  };
+
+  const handleCloseOpenConfirmReceive = () => {
+    setSelectedOrder(null);
+    setOpenConfirmReceive(false);
+  };
+
+  const handleConfirmReceive = async () => {
+    const updatedOrder = {
+      ...selectedOrder,
+      status: "receive",
+    };
+    await updateOrder(updatedOrder);
+    setOpenConfirmReceive(false);
+    setSelectedOrder(null);
+  };
   const handleStatusChange = async () => {
     const updatedOrder = {
       ...selectedOrder,
@@ -338,8 +358,18 @@ const OrderTable = ({ active }) => {
                       (karigar) => karigar.id === order.karigar_id
                     )?.name || ""}
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell
+                    sx={{
+                      textAlign: "center",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     <StyledButton
+                      sx={{
+                        display: "block",
+                        width: "100%",
+                        marginBottom: "16px",
+                      }}
                       variant="outlined"
                       onClick={() => handleOpenStatusChange(order)}
                     >
@@ -347,6 +377,35 @@ const OrderTable = ({ active }) => {
                         ? "Mark as Active"
                         : "Mark as Complete"}
                     </StyledButton>
+                    {order.status !== "receive" && (
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => handleOpenConfirmReceive(order)}
+                        sx={{
+                          display: "block",
+                          width: "100%",
+                          borderColor: "green",
+                          color: "green",
+                          backgroundColor: "transparent",
+                          mr: 1,
+                          cursor: "pointer",
+                          "&:hover": {
+                            borderColor: "darkgreen",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Received
+                      </Button>
+                    )}
+                    <ConfirmDialog
+                      openConfirm={openConfirmReceive}
+                      handleCloseOpenConfirm={handleCloseOpenConfirmReceive}
+                      confirmation={handleConfirmReceive}
+                      title="Do you want to change the status?"
+                      info="If marked as received, find the order in the history tab."
+                    />
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
