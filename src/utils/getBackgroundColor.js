@@ -7,7 +7,7 @@ const getBackgroundColor = (delivery_date) => {
   if (diffDays <= 0) {
     return "#D91656";
   } else if (diffDays <= 3) {
-    return "#FFEB00";
+    return "#ffeb00b0";
   } else {
     return "#6EC207";
   }
