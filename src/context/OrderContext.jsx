@@ -12,7 +12,7 @@ export const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
-  const { token } = useContext(UserContext);
+  const { token, user } = useContext(UserContext);
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success");
@@ -29,7 +29,7 @@ export const OrderProvider = ({ children }) => {
 
   const addOrder = async (newOrder) => {
     console.log("added new order: ", newOrder);
-    const res = await addOrders(newOrder);
+    const res = await addOrders(newOrder, user);
     if (res.status === 201) {
       setOrders((prevOrders) => [...prevOrders, res?.data]);
       setAlertMessage("Order added successfully!");

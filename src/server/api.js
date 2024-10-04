@@ -137,7 +137,7 @@ export const deleteImageFromS3 = async (imageUrls) => {
   }
 };
 
-export const addOrders = async (newOrder, user = "purnim") => {
+export const addOrders = async (newOrder, user) => {
   const token = localStorage.getItem("accessToken");
   const header = {
     headers: { "x-access-token": token },

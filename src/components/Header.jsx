@@ -72,6 +72,10 @@ export default function Header() {
     setAnchorElUser(null);
   };
 
+  const handleLogoClick = () => {
+    navigate("/home");
+  };
+
   return (
     <>
       <AppBar position="static" sx={{ backgroundColor: "#2E2E2E" }}>
@@ -88,6 +92,7 @@ export default function Header() {
               component="img"
               src={logo}
               alt="LOGO"
+              onClick={handleLogoClick}
               sx={{
                 display: { xs: "none", md: "flex" },
                 mr: 1,
@@ -98,6 +103,7 @@ export default function Header() {
                 left: { md: "24px" },
                 top: "50%",
                 transform: "translateY(-50%)",
+                cursor: "pointer",
               }}
             />
 
@@ -199,6 +205,7 @@ export default function Header() {
               component="img"
               src={logo}
               alt="LOGO"
+              onClick={handleLogoClick}
               sx={{
                 display: { xs: "flex", md: "none" },
                 mr: 1,
@@ -209,6 +216,7 @@ export default function Header() {
                 left: "50%",
                 top: "50%",
                 transform: "translate(-50%, -50%)",
+                cursor: "pointer",
               }}
             />
             <Box
