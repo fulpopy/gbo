@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Typography,
   List,
@@ -13,16 +13,43 @@ import {
 import { Delete as DeleteIcon, Add as AddIcon } from "@mui/icons-material";
 import { deleteUser } from "../server/api";
 import { UserContext } from "../context";
+import AlertSnackbar from "./AlertSnackbar";
+import ConfirmDialog from "./ConfirmDialog";
 
 const ExistingUsersList = ({ users, onUserDeleted, onOpenCreateForm }) => {
   const { user } = useContext(UserContext);
-  const handleDeleteUser = async (userId) => {
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("success");
+  const [userId, setUserId] = useState(null);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const handleDeleteUser = async () => {
     try {
-      await deleteUser(userId);
+      let res = await deleteUser(userId);
+      if (res.status === 200) {
+        setAlertMessage("User deleted successfully!");
+        setAlertSeverity("success");
+        setAlertOpen(true);
+      } else {
+        setAlertMessage(`Failed to delete user.`);
+        setAlertSeverity("error");
+        setAlertOpen(true);
+      }
       onUserDeleted();
     } catch (error) {
       console.error("Failed to delete u:", error);
     }
+    setOpenConfirm(false);
+  };
+
+  const handleOpenOpenConfirm = (id) => {
+    setUserId(id);
+    setOpenConfirm(true);
+  };
+
+  const handleCloseOpenConfirm = () => {
+    setOpenConfirm(false);
+    setUserId(null);
   };
 
   return (
@@ -69,7 +96,7 @@ const ExistingUsersList = ({ users, onUserDeleted, onOpenCreateForm }) => {
                     <IconButton
                       edge="end"
                       aria-label="delete"
-                      onClick={() => handleDeleteUser(u.id)}
+                      onClick={() => handleOpenOpenConfirm(u.id)}
                     >
                       <DeleteIcon color="error" />
                     </IconButton>
@@ -81,6 +108,19 @@ const ExistingUsersList = ({ users, onUserDeleted, onOpenCreateForm }) => {
           ))}
         </List>
       </Paper>
+      <AlertSnackbar
+        alertOpen={alertOpen}
+        alertSeverity={alertSeverity}
+        alertMessage={alertMessage}
+        setAlertOpen={setAlertOpen}
+      />
+      <ConfirmDialog
+        openConfirm={openConfirm}
+        handleCloseOpenConfirm={handleCloseOpenConfirm}
+        confirmation={handleDeleteUser}
+        title="Do you want to delete the user?"
+        info="This action cannot be undone."
+      />
     </>
   );
 };

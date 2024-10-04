@@ -18,9 +18,6 @@ import KarigarList from "./KarigarList";
 import UserManagementModal from "./UserManagementModal";
 import { UserContext } from "../context";
 
-const pages = ["home", "orders", "history"];
-const settings = ["Account", "Logout"];
-
 export default function Header() {
   const location = useLocation();
   const currentPage = location.pathname.split("/")[1];
@@ -28,7 +25,6 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [openKarigarModal, setOpenKarigarModal] = useState(false);
   const [openUserManagementModal, setOpenUserManagementModal] = useState(false);
-  const [orders, setOrders] = useState([]);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const { logout, isAdmin, user } = useContext(UserContext);

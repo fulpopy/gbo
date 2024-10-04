@@ -1,7 +1,5 @@
 // context/UserContext.js
 import React, { createContext, useState, useEffect, useCallback } from "react";
-import { Snackbar, SnackbarContent, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 

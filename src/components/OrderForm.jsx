@@ -65,6 +65,7 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
         product: isCustomProduct ? "other" : order.product, // Set 'other' for custom products
       });
     }
+    // eslint-disable-next-line
   }, [order]);
 
   useEffect(() => {

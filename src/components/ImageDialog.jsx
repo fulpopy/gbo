@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import { Dialog, DialogContent, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 const ImageDialog = ({

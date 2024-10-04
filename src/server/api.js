@@ -190,9 +190,10 @@ export const registerUser = async (userData) => {
   };
   try {
     let res = await axios.post(`${URL}/api/auth/signup`, userData, header);
-    return res.data;
+    return res;
   } catch (error) {
     console.log(error);
+    return { status: 400 };
   }
 };
 export const getAllUsers = async () => {
@@ -214,7 +215,9 @@ export const deleteUser = async (userId) => {
   };
   try {
     let res = await axios.delete(`${URL}/api/auth/users/${userId}`, header);
+    return res;
   } catch (error) {
     console.log(error);
+    return { status: 400 };
   }
 };
