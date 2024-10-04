@@ -35,7 +35,7 @@ const Login = () => {
     event.preventDefault();
     const user = await loginApi(formData);
     if (user) {
-      login(user, user.accessToken);
+      login(user.accessToken);
       navigate("/home");
     } else {
       setInvalid(true);

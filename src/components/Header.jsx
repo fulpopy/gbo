@@ -8,15 +8,14 @@ import {
   Typography,
   Menu,
   Container,
-  Avatar,
   Button,
-  Tooltip,
   MenuItem,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../icons/logo.png";
 import OrderForm from "./OrderForm";
 import KarigarList from "./KarigarList";
+import UserManagementModal from "./UserManagementModal";
 import { UserContext } from "../context";
 
 const pages = ["home", "orders", "history"];
@@ -28,10 +27,11 @@ function Header() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [openKarigarModal, setOpenKarigarModal] = useState(false);
+  const [openUserManagementModal, setOpenUserManagementModal] = useState(false);
   const [orders, setOrders] = useState([]);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const { logout } = useContext(UserContext);
+  const { logout, isAdmin, user } = useContext(UserContext);
 
   const handleLogout = () => {
     logout();
@@ -45,6 +45,13 @@ function Header() {
 
   const handleOpenKarigarModal = () => setOpenKarigarModal(true);
   const handleCloseKarigarModal = () => setOpenKarigarModal(false);
+
+  const handleOpenUserManagementModal = () => {
+    setOpenUserManagementModal(true);
+    handleCloseUserMenu();
+  };
+  const handleCloseUserManagementModal = () =>
+    setOpenUserManagementModal(false);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -72,8 +79,8 @@ function Header() {
           <Toolbar
             disableGutters
             sx={{
-              minHeight: { xs: "46px", md: "46px !important" }, // Ensuring the height is consistent for both mobile and desktop
-              px: { xs: 2, md: 3 }, // Adjust padding if needed to maintain spacing
+              minHeight: { xs: "46px", md: "46px !important" },
+              px: { xs: 2, md: 3 },
               maxHeight: "50px",
             }}
           >
@@ -197,27 +204,55 @@ function Header() {
               GBO
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages.map((page) => (
+              <Button
+                key="home"
+                onClick={() => handleNavigate("home")}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  boxShadow:
+                    currentPage === "home" ? "0px 0px 5px 0px" : "none",
+                }}
+              >
+                Home
+              </Button>
+              <Button
+                key="orders"
+                onClick={() => handleNavigate("orders")}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  boxShadow:
+                    currentPage === "orders" ? "0px 0px 5px 0px" : "none",
+                }}
+              >
+                orders
+              </Button>
+              {isAdmin && (
                 <Button
-                  key={page}
-                  onClick={() => handleNavigate(page)}
+                  key="history"
+                  onClick={() => handleNavigate("history")}
                   sx={{
                     my: 2,
                     color: "white",
                     display: "block",
                     boxShadow:
-                      currentPage === page ? "0px 0px 5px 0px" : "none",
+                      currentPage === "history" ? "0px 0px 5px 0px" : "none",
                   }}
                 >
-                  {page}
+                  history
                 </Button>
-              ))}
-              <Button
-                sx={{ my: 2, color: "white", display: "block" }}
-                onClick={handleOpen}
-              >
-                ADD ORDER
-              </Button>
+              )}
+              {isAdmin && (
+                <Button
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  onClick={handleOpen}
+                >
+                  ADD ORDER
+                </Button>
+              )}
               <Button
                 sx={{ my: 2, color: "white", display: "block" }}
                 onClick={handleOpenKarigarModal}
@@ -227,11 +262,12 @@ function Header() {
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
+              <Button
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0, color: "white" }}
+              >
+                User: {user}
+              </Button>
               <Menu
                 sx={{ mt: "45px" }}
                 id="menu-appbar"
@@ -248,9 +284,16 @@ function Header() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                <MenuItem key="Account" onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">Account</Typography>
-                </MenuItem>
+                {isAdmin && (
+                  <MenuItem
+                    key="UserManagement"
+                    onClick={handleOpenUserManagementModal}
+                  >
+                    <Typography textAlign="center">
+                      Users (Admin only)
+                    </Typography>
+                  </MenuItem>
+                )}
                 <MenuItem key="Logout" onClick={handleCloseUserMenu}>
                   <Typography textAlign="center" onClick={handleLogout}>
                     Logout
@@ -267,6 +310,10 @@ function Header() {
         openKarigarModal={openKarigarModal}
         setOpenKarigarModal={setOpenKarigarModal}
         handleCloseKarigarModal={handleCloseKarigarModal}
+      />
+      <UserManagementModal
+        open={openUserManagementModal}
+        onClose={handleCloseUserManagementModal}
       />
     </>
   );

@@ -29,8 +29,7 @@ export const OrderProvider = ({ children }) => {
 
   const addOrder = async (newOrder) => {
     console.log("added new order: ", newOrder);
-    const username = localStorage.getItem("username");
-    const res = await addOrders(newOrder, username);
+    const res = await addOrders(newOrder);
     if (res.status === 201) {
       setOrders((prevOrders) => [...prevOrders, res?.data]);
       setAlertMessage("Order added successfully!");

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import OrderForm from "./OrderForm";
-import { OrderContext } from "../context";
+import { OrderContext, UserContext } from "../context";
 import ConfirmDialog from "./ConfirmDialog";
 import ImageDialog from "./ImageDialog";
 
@@ -24,7 +24,8 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const { deleteOrder, updateOrder } = useContext(OrderContext);
+  const { deleteOrder } = useContext(OrderContext);
+  const { isAdmin } = useContext(UserContext);
 
   const handleEdit = () => {
     setOpenForm(true);
@@ -52,7 +53,6 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
     setImageModalOpen(false);
     setSelectedImage(null);
   };
-
   return (
     <>
       <Modal
@@ -266,13 +266,15 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                 >
                   Edit
                 </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={handleOpenConfirmDelete}
-                >
-                  Delete
-                </Button>
+                {isAdmin && (
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={handleOpenConfirmDelete}
+                  >
+                    Delete
+                  </Button>
+                )}
                 <ConfirmDialog
                   openConfirm={openConfirmDelete}
                   handleCloseOpenConfirm={handleCloseOpenConfirmDelete}

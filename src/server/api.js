@@ -137,7 +137,7 @@ export const deleteImageFromS3 = async (imageUrls) => {
   }
 };
 
-export const addOrders = async (newOrder, user) => {
+export const addOrders = async (newOrder, user = "purnim") => {
   const token = localStorage.getItem("accessToken");
   const header = {
     headers: { "x-access-token": token },
@@ -181,5 +181,40 @@ export const deleteOrders = async (order_id) => {
   } catch (error) {
     console.log(error.message);
     return { status: 400 };
+  }
+};
+export const registerUser = async (userData) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
+  try {
+    let res = await axios.post(`${URL}/api/auth/signup`, userData, header);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getAllUsers = async () => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
+  try {
+    let res = await axios.get(`${URL}/api/auth/users`, header);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const deleteUser = async (userId) => {
+  const token = localStorage.getItem("accessToken");
+  const header = {
+    headers: { "x-access-token": token },
+  };
+  try {
+    let res = await axios.delete(`${URL}/api/auth/users/${userId}`, header);
+  } catch (error) {
+    console.log(error);
   }
 };

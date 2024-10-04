@@ -14,11 +14,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import KarigarForm from "./KarigarForm";
-import { KarigarContext } from "../context";
+import { KarigarContext, UserContext } from "../context";
 import ConfirmDialog from "./ConfirmDialog";
 
 const KarigarList = ({ openKarigarModal, handleCloseKarigarModal }) => {
   const { karigars, deleteKarigar } = useContext(KarigarContext);
+  const { isAdmin } = useContext(UserContext);
   const [openKarigarForm, setOpenKarigarForm] = useState(false);
   const [currentKarigar, setCurrentKarigar] = useState(null);
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
@@ -95,13 +96,15 @@ const KarigarList = ({ openKarigarModal, handleCloseKarigarModal }) => {
           >
             KARIGAR LIST
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={toggleAddKarigarForm}
-          >
-            Add Karigar
-          </Button>
+          {isAdmin && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={toggleAddKarigarForm}
+            >
+              Add Karigar
+            </Button>
+          )}
           <Grid
             container
             spacing={2}
@@ -135,41 +138,43 @@ const KarigarList = ({ openKarigarModal, handleCloseKarigarModal }) => {
                         {karigar.description}
                       </Typography>
                     </CardContent>
-                    <CardActions>
-                      <IconButton
-                        sx={{
-                          margin: "0px 10px",
-                          color: "grey.700",
-                          "&:hover": {
-                            color: "blue",
-                          },
-                        }}
-                        aria-label="edit"
-                        onClick={() => toggleEditKarigarForm(karigar)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        sx={{
-                          margin: "0px 10px",
-                          color: "grey.700",
-                          "&:hover": {
-                            color: "red",
-                          },
-                        }}
-                        aria-label="delete"
-                        onClick={() => handleOpenConfirmDelete(karigar.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                      <ConfirmDialog
-                        openConfirm={openConfirmDelete}
-                        handleCloseOpenConfirm={handleCloseOpenConfirmDelete}
-                        confirmation={handleConfirmDelete}
-                        title="Do you want to delete the karigar?"
-                        info="If karigar is deleted, all data related to that karigar will be lost."
-                      />
-                    </CardActions>
+                    {isAdmin && (
+                      <CardActions>
+                        <IconButton
+                          sx={{
+                            margin: "0px 10px",
+                            color: "grey.700",
+                            "&:hover": {
+                              color: "blue",
+                            },
+                          }}
+                          aria-label="edit"
+                          onClick={() => toggleEditKarigarForm(karigar)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          sx={{
+                            margin: "0px 10px",
+                            color: "grey.700",
+                            "&:hover": {
+                              color: "red",
+                            },
+                          }}
+                          aria-label="delete"
+                          onClick={() => handleOpenConfirmDelete(karigar.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                        <ConfirmDialog
+                          openConfirm={openConfirmDelete}
+                          handleCloseOpenConfirm={handleCloseOpenConfirmDelete}
+                          confirmation={handleConfirmDelete}
+                          title="Do you want to delete the karigar?"
+                          info="If karigar is deleted, all data related to that karigar will be lost."
+                        />
+                      </CardActions>
+                    )}
                   </Card>
                 </Grid>
               ))}
