@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import { styled, keyframes } from "@mui/material/styles";
 import { OrderContext } from "../context";
-import { products } from "../constants/products";
 import OrderModal from "./OrderModal";
 import { getBackgroundColor } from "../utils";
 
@@ -292,39 +291,39 @@ const KarigarProductOrders = () => {
                       </TableRow>
                     )
                   )
-                : products.map((product, index) => {
-                    const productOrderList = productOrders[product] || [];
-                    if (productOrderList.length === 0) return null;
-                    return (
-                      <TableRow
-                        key={product}
-                        sx={{
-                          backgroundColor:
-                            index % 2 === 0 ? "#FFF8E1" : "inherit",
-                        }}
-                      >
-                        <StyledTableCell
-                          component="th"
-                          scope="row"
-                          sx={{ width: "200px", textAlign: "center" }}
+                : Object.entries(productOrders).map(
+                    ([product, orders], index) => {
+                      return (
+                        <TableRow
+                          key={product}
+                          sx={{
+                            backgroundColor:
+                              index % 2 === 0 ? "#FFF8E1" : "inherit",
+                          }}
                         >
-                          <Typography variant="subtitle2">{product}</Typography>
-                        </StyledTableCell>
-                        <TableCell>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              gap: 2,
-                              overflowX: "auto",
-                              paddingBottom: 2,
-                            }}
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            sx={{ width: "200px", textAlign: "center" }}
                           >
-                            {productOrderList.map(renderOrderCard)}
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                            <Typography variant="h6">{product}</Typography>
+                          </StyledTableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                gap: 2,
+                                overflowX: "auto",
+                                paddingBottom: 2,
+                              }}
+                            >
+                              {orders.map(renderOrderCard)}
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                  )}
             </TableBody>
           </Table>
         </StyledTableContainer>
