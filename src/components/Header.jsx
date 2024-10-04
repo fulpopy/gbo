@@ -141,30 +141,60 @@ function Header() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page}>
-                    <Typography
-                      sx={{
-                        textTransform: "uppercase",
-                        borderBottom:
-                          currentPage === page ? "1px solid black" : "0px",
-                      }}
-                      textAlign="center"
-                      onClick={() => handleNavigate(page)}
-                    >
-                      {page}
-                    </Typography>
-                  </MenuItem>
-                ))}
-                <MenuItem>
+                <MenuItem key="home">
                   <Typography
+                    sx={{
+                      textTransform: "uppercase",
+                      borderBottom:
+                        currentPage === "home" ? "1px solid black" : "0px",
+                    }}
                     textAlign="center"
-                    sx={{ textTransform: "uppercase" }}
-                    onClick={handleOpen}
+                    onClick={() => handleNavigate("home")}
                   >
-                    Add Order
+                    Home
                   </Typography>
                 </MenuItem>
+                <MenuItem key="orders">
+                  <Typography
+                    sx={{
+                      textTransform: "uppercase",
+                      borderBottom:
+                        currentPage === "orders" ? "1px solid black" : "0px",
+                    }}
+                    textAlign="center"
+                    onClick={() => handleNavigate("orders")}
+                  >
+                    Orders
+                  </Typography>
+                </MenuItem>
+                {isAdmin && (
+                  <>
+                    <MenuItem key="history">
+                      <Typography
+                        sx={{
+                          textTransform: "uppercase",
+                          borderBottom:
+                            currentPage === "history"
+                              ? "1px solid black"
+                              : "0px",
+                        }}
+                        textAlign="center"
+                        onClick={() => handleNavigate("history")}
+                      >
+                        History
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem>
+                      <Typography
+                        textAlign="center"
+                        sx={{ textTransform: "uppercase" }}
+                        onClick={handleOpen}
+                      >
+                        Add Order
+                      </Typography>
+                    </MenuItem>
+                  </>
+                )}
                 <MenuItem>
                   <Typography
                     textAlign="center"

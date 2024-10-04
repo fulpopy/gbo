@@ -6,10 +6,12 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-  Paper,
-  Modal,
   Box,
   IconButton,
+  Modal,
+  FormControl,
+  FormLabel,
+  FormHelperText,
 } from "@mui/material";
 import { PersonAdd as PersonAddIcon, Close } from "@mui/icons-material";
 import { registerUser } from "../server/api";
@@ -18,9 +20,17 @@ const UserCreationForm = ({ open, onClose, onUserCreated }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
+    if (!role) {
+      setError("Please select a role");
+      return;
+    }
+
     try {
       const userData = {
         username,
@@ -35,6 +45,7 @@ const UserCreationForm = ({ open, onClose, onUserCreated }) => {
       onClose();
     } catch (error) {
       console.error("Failed to register user:", error);
+      setError("Failed to register user. Please try again.");
     }
   };
 
@@ -72,6 +83,7 @@ const UserCreationForm = ({ open, onClose, onUserCreated }) => {
             p: 1,
             textAlign: "center",
             borderRadius: "5px",
+            mb: 3,
           }}
         >
           Create New User
@@ -85,10 +97,10 @@ const UserCreationForm = ({ open, onClose, onUserCreated }) => {
             margin="normal"
             required
             variant="outlined"
-            sx={{ mb: 2 }}
+            sx={{ mb: 1 }}
             inputProps={{ maxLength: 150 }}
           />
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
             {`${username.length}/150`}
           </Typography>
           <TextField
@@ -100,21 +112,28 @@ const UserCreationForm = ({ open, onClose, onUserCreated }) => {
             margin="normal"
             required
             variant="outlined"
-            sx={{ mb: 2 }}
+            sx={{ mb: 1 }}
             inputProps={{ maxLength: 128 }}
           />
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
             {`${password.length}/128`}
           </Typography>
-          <RadioGroup
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            sx={{ mb: 2 }}
-            required
-          >
-            <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-            <FormControlLabel value="user" control={<Radio />} label="User" />
-          </RadioGroup>
+          <FormControl component="fieldset" required error={!!error}>
+            <FormLabel component="legend">Role</FormLabel>
+            <RadioGroup
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              sx={{ mb: 2 }}
+            >
+              <FormControlLabel
+                value="admin"
+                control={<Radio />}
+                label="Admin"
+              />
+              <FormControlLabel value="user" control={<Radio />} label="User" />
+            </RadioGroup>
+            {error && <FormHelperText>{error}</FormHelperText>}
+          </FormControl>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Button
               type="submit"

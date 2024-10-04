@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Box, Typography, Grid } from "@mui/material";
+import { Modal, Box, Typography, Grid, IconButton } from "@mui/material";
 import { getAllUsers } from "../server/api";
 import UserCreationForm from "./UserCreationForm";
 import ExistingUsersList from "./ExistingUsersList";
+import { Close } from "@mui/icons-material";
 
 const UserManagementModal = ({ open, onClose }) => {
   const [users, setUsers] = useState([]);
@@ -62,6 +63,12 @@ const UserManagementModal = ({ open, onClose }) => {
             overflowY: "auto",
           }}
         >
+          <IconButton
+            sx={{ position: "absolute", top: 8, right: 8 }}
+            onClick={onClose}
+          >
+            <Close />
+          </IconButton>
           <Typography
             id="user-management-modal-title"
             variant="h5"
