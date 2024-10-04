@@ -15,11 +15,11 @@ import bg from "../pictures/bg.jpg";
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(UserContext);
-
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     username: "",
     password: "",
-  });
+  };
+  const [formData, setFormData] = useState(initialFormData);
   const [invalid, setInvalid] = useState(false);
 
   const handleChange = (event) => {
@@ -40,6 +40,7 @@ export default function Login() {
     } else {
       setInvalid(true);
     }
+    setFormData(initialFormData);
   };
 
   return (
