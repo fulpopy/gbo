@@ -10,10 +10,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { login as loginApi } from "../server/api";
 import { UserContext } from "../context";
+import bg from "../pictures/bg.jpg";
 
-const Login = () => {
+export default function Login() {
   const navigate = useNavigate();
-
   const { login } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
@@ -46,8 +46,9 @@ const Login = () => {
     <Box
       sx={{
         height: "100vh",
-        backgroundImage: "url(https://picsum.photos/1920/1080)",
+        backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
+        backgroundPosition: "center",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -60,7 +61,7 @@ const Login = () => {
             padding: 4,
             borderRadius: 3,
             backdropFilter: "blur(10px)",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            backgroundColor: "#ffffff57",
           }}
         >
           <Typography
@@ -108,7 +109,6 @@ const Login = () => {
                 padding: "10px 0",
                 background: "linear-gradient(90deg, #2196f3, #21cbf3)",
               }}
-              onClick={handleLogin}
             >
               Login
             </Button>
@@ -117,6 +117,4 @@ const Login = () => {
       </Container>
     </Box>
   );
-};
-
-export default Login;
+}

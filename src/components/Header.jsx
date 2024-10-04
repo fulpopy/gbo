@@ -12,7 +12,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import logo from "../icons/logo.png";
+import logo from "../pictures/logo.png";
 import OrderForm from "./OrderForm";
 import KarigarList from "./KarigarList";
 import UserManagementModal from "./UserManagementModal";
@@ -21,7 +21,7 @@ import { UserContext } from "../context";
 const pages = ["home", "orders", "history"];
 const settings = ["Account", "Logout"];
 
-function Header() {
+export default function Header() {
   const location = useLocation();
   const currentPage = location.pathname.split("/")[1];
   const navigate = useNavigate();
@@ -91,26 +91,15 @@ function Header() {
               sx={{
                 display: { xs: "none", md: "flex" },
                 mr: 1,
-                width: { md: "50px" },
+                width: { md: "80px" },
+                backgroundColor: "white",
+                padding: "0px 5px",
+                position: "absolute",
+                left: { md: "24px" },
+                top: "50%",
+                transform: "translateY(-50%)",
               }}
             />
-
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              GBO
-            </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
@@ -213,27 +202,22 @@ function Header() {
               sx={{
                 display: { xs: "flex", md: "none" },
                 mr: 1,
-                width: { xs: "50px" },
+                width: { xs: "80px" },
+                backgroundColor: "white",
+                padding: "0px 5px",
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
               }}
             />
-            <Typography
-              variant="h5"
-              noWrap
-              component="a"
+            <Box
               sx={{
-                mr: 2,
-                display: { xs: "flex", md: "none" },
                 flexGrow: 1,
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
+                display: { xs: "none", md: "flex" },
+                justifyContent: "center",
               }}
             >
-              GBO
-            </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               <Button
                 key="home"
                 onClick={() => handleNavigate("home")}
@@ -348,5 +332,3 @@ function Header() {
     </>
   );
 }
-
-export default Header;
