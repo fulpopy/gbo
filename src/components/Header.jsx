@@ -159,22 +159,22 @@ export default function Header() {
                   </Typography>
                 </MenuItem>
                 {isAdmin && (
-                  <>
-                    <MenuItem key="history">
-                      <Typography
-                        sx={{
-                          textTransform: "uppercase",
-                          borderBottom:
-                            currentPage === "history"
-                              ? "1px solid black"
-                              : "0px",
-                        }}
-                        textAlign="center"
-                        onClick={() => handleNavigate("history")}
-                      >
-                        History
-                      </Typography>
-                    </MenuItem>
+                  <MenuItem key="history">
+                    <Typography
+                      sx={{
+                        textTransform: "uppercase",
+                        borderBottom:
+                          currentPage === "history"
+                            ? "1px solid black"
+                            : "0px",
+                      }}
+                      textAlign="center"
+                      onClick={() => handleNavigate("history")}
+                    >
+                      History
+                    </Typography>
+                  </MenuItem>
+                  )}
                     <MenuItem>
                       <Typography
                         textAlign="center"
@@ -184,8 +184,8 @@ export default function Header() {
                         Add Order
                       </Typography>
                     </MenuItem>
-                  </>
-                )}
+                  
+                
                 <MenuItem>
                   <Typography
                     textAlign="center"
@@ -263,14 +263,14 @@ export default function Header() {
                   history
                 </Button>
               )}
-              {isAdmin && (
+             
                 <Button
                   sx={{ my: 2, color: "white", display: "block" }}
                   onClick={handleOpen}
                 >
                   ADD ORDER
                 </Button>
-              )}
+             
               <Button
                 sx={{ my: 2, color: "white", display: "block" }}
                 onClick={handleOpenKarigarModal}
