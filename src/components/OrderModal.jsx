@@ -258,25 +258,25 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
               {/* End Grid Layout */}
 
               <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-              {isAdmin && (
-                <>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ mr: 1 }}
-                    onClick={handleEdit}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={handleOpenConfirmDelete}
-                  >
-                    Delete
-                  </Button>
-                </>
-              )}
+                {isAdmin && (
+                  <>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{ mr: 1 }}
+                      onClick={handleEdit}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={handleOpenConfirmDelete}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                )}
                 <ConfirmDialog
                   openConfirm={openConfirmDelete}
                   handleCloseOpenConfirm={handleCloseOpenConfirmDelete}
