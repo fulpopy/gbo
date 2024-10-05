@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:3001";
+const URL = "http://43.204.111.159:3001";
 export const login = async (user) => {
   try {
     let res = await axios.post(`${URL}/api/auth/signin`, user);
