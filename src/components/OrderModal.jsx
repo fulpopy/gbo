@@ -17,6 +17,7 @@ import OrderForm from "./OrderForm";
 import { OrderContext, UserContext } from "../context";
 import ConfirmDialog from "./ConfirmDialog";
 import ImageDialog from "./ImageDialog";
+import { formatDate } from "../utils/formatDate";
 
 function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
   const [openForm, setOpenForm] = useState(false);
@@ -98,10 +99,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                             Product
                           </Typography>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ border: "1px solid #ddd" }}
-                        >
+                        <TableCell sx={{ border: "1px solid #ddd" }}>
                           {order.product}
                         </TableCell>
                       </TableRow>
@@ -114,10 +112,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                             Karat
                           </Typography>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ border: "1px solid #ddd" }}
-                        >
+                        <TableCell sx={{ border: "1px solid #ddd" }}>
                           {order.karat}
                         </TableCell>
                       </TableRow>
@@ -130,10 +125,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                             Weight
                           </Typography>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ border: "1px solid #ddd" }}
-                        >
+                        <TableCell sx={{ border: "1px solid #ddd" }}>
                           {order.lot_weight}
                         </TableCell>
                       </TableRow>
@@ -146,10 +138,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                             Description
                           </Typography>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ border: "1px solid #ddd" }}
-                        >
+                        <TableCell sx={{ border: "1px solid #ddd" }}>
                           {order.description}
                         </TableCell>
                       </TableRow>
@@ -162,15 +151,8 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                             Date Placed
                           </Typography>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ border: "1px solid #ddd" }}
-                        >
-                          {new Intl.DateTimeFormat("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          }).format(new Date(order.placed_date))}
+                        <TableCell sx={{ border: "1px solid #ddd" }}>
+                          {formatDate(order.placed_date)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -182,15 +164,8 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                             End Date
                           </Typography>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ border: "1px solid #ddd" }}
-                        >
-                          {new Intl.DateTimeFormat("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          }).format(new Date(order.delivery_date))}
+                        <TableCell sx={{ border: "1px solid #ddd" }}>
+                          {formatDate(order.delivery_date)}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -202,10 +177,7 @@ function OrderModal({ modalOpen, order, handleCloseModal, setOrder }) {
                             Status
                           </Typography>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ border: "1px solid #ddd" }}
-                        >
+                        <TableCell sx={{ border: "1px solid #ddd" }}>
                           {order.status === "active"
                             ? "Active"
                             : order.status === "complete"

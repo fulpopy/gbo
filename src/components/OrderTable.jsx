@@ -15,7 +15,7 @@ import {
 import { styled } from "@mui/material/styles";
 import OrderModal from "./OrderModal";
 import { OrderContext, KarigarContext } from "../context";
-import { getBackgroundColor } from "../utils";
+import { formatDate, getBackgroundColor } from "../utils";
 import ImageDialog from "./ImageDialog";
 import ConfirmDialog from "./ConfirmDialog";
 import { Search as SearchIcon } from "lucide-react";
@@ -291,11 +291,7 @@ const OrderTable = ({ active }) => {
                       color: order.status === "complete" && "#FFFFFF",
                     }}
                   >
-                    {new Intl.DateTimeFormat("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    }).format(new Date(order.placed_date))}
+                    {formatDate(order.placed_date)}
                   </StyledTableCell>
                   <StyledTableCell
                     sx={{
@@ -305,11 +301,7 @@ const OrderTable = ({ active }) => {
                       color: order.status === "complete" && "#FFFFFF",
                     }}
                   >
-                    {new Intl.DateTimeFormat("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    }).format(new Date(order.delivery_date))}
+                    {formatDate(order.delivery_date)}
                   </StyledTableCell>
                   <StyledTableCell
                     sx={{ color: order.status === "complete" && "#FFFFFF" }}

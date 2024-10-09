@@ -18,7 +18,7 @@ import {
 import { styled, keyframes } from "@mui/material/styles";
 import { OrderContext } from "../context";
 import OrderModal from "./OrderModal";
-import { getBackgroundColor } from "../utils";
+import { getBackgroundColor, formatDate, formatString } from "../utils";
 
 const blink = keyframes`
   0% { opacity: 0; }
@@ -60,7 +60,8 @@ const StyledHeaderCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  minWidth: 200,
+  maxWidth: 200,
+  width: 200,
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
   backgroundColor: "#FFFAF0",
   border: "1px solid #D4AF37",
@@ -83,8 +84,9 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const StyledChip = styled(Chip)(({ theme, date }) => ({
-  backgroundColor: getBackgroundColor(date),
+const StyledChip = styled(Chip)(({ theme, date, status }) => ({
+  backgroundColor: status === "complete" ? "#2e2e2e" : getBackgroundColor(date),
+  color: "white",
   border: "1px solid #D4AF37",
   padding: theme.spacing(0.5, 1),
   "& .MuiChip-label": {
@@ -96,7 +98,7 @@ const StyledChip = styled(Chip)(({ theme, date }) => ({
     width: "8px",
     height: "8px",
     borderRadius: "50%",
-    backgroundColor: "black",
+    backgroundColor: "white",
     marginRight: "6px",
     animation: `${blink} 1.5s infinite`,
   },
@@ -157,11 +159,11 @@ const KarigarProductOrders = () => {
       sx={{
         backgroundColor:
           order.karat === "18K"
-            ? "#f9a8d4"
+            ? "#c8c8c8"
             : order.karat === "20K"
-            ? "#a5f3fc"
+            ? "#f77e93"
             : order.karat === "22K"
-            ? "#d6d3d1"
+            ? "#00d9ff"
             : "transparent",
       }}
     >
@@ -177,32 +179,27 @@ const KarigarProductOrders = () => {
             variant="subtitle1"
             sx={{ fontWeight: "bold", marginRight: "5px" }}
           >
-            {showKarigarView ? order.product : order?.karigar?.name}
+            {showKarigarView
+              ? formatString(order?.product)
+              : formatString(order?.karigar?.name)}
           </Typography>
 
           <StyledChip
             label={order.status === "active" ? "Active" : "Complete"}
             size="small"
             date={order.delivery_date}
+            status={order.status}
           />
         </Box>
         <Typography variant="body2">Lot Weight: {order.lot_weight}</Typography>
-        {/* <Typography variant="body2">Karat: {order.karat}</Typography> */}
         <Typography variant="body2">
-          Placed:{" "}
-          {new Intl.DateTimeFormat("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }).format(new Date(order.placed_date))}
+          Placed: {formatDate(order.placed_date)}
         </Typography>
         <Typography variant="body2">
-          Delivery:{" "}
-          {new Intl.DateTimeFormat("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }).format(new Date(order.delivery_date))}
+          Delivery: {formatDate(order.delivery_date)}
+        </Typography>
+        <Typography variant="body2">
+          Description: {formatString(order.description, 20)}
         </Typography>
       </CardContent>
     </StyledCard>
@@ -274,15 +271,16 @@ const KarigarProductOrders = () => {
                           scope="row"
                           sx={{ width: "200px", textAlign: "center" }}
                         >
-                          <Typography variant="h6">{karigarName}</Typography>
+                          <Typography variant="h6">
+                            {formatString(karigarName)}
+                          </Typography>
                         </StyledTableCell>
                         <TableCell>
                           <Box
                             sx={{
                               display: "flex",
                               gap: 2,
-                              overflowX: "auto",
-                              paddingBottom: 2,
+                              overflow: "hidden",
                             }}
                           >
                             {orders.map(renderOrderCard)}
@@ -306,15 +304,16 @@ const KarigarProductOrders = () => {
                             scope="row"
                             sx={{ width: "200px", textAlign: "center" }}
                           >
-                            <Typography variant="h6">{product}</Typography>
+                            <Typography variant="h6">
+                              {formatString(product)}
+                            </Typography>
                           </StyledTableCell>
                           <TableCell>
                             <Box
                               sx={{
                                 display: "flex",
                                 gap: 2,
-                                overflowX: "auto",
-                                paddingBottom: 2,
+                                overflow: "hidden",
                               }}
                             >
                               {orders.map(renderOrderCard)}
