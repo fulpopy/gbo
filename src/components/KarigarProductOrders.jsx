@@ -86,7 +86,7 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
 
 const StyledChip = styled(Chip)(({ theme, date, status }) => ({
   backgroundColor: status === "complete" ? "#2e2e2e" : getBackgroundColor(date),
-  color: "white",
+  color: status === "complete" ? "white" : "black",
   border: "1px solid #D4AF37",
   padding: theme.spacing(0.5, 1),
   "& .MuiChip-label": {
@@ -98,7 +98,7 @@ const StyledChip = styled(Chip)(({ theme, date, status }) => ({
     width: "8px",
     height: "8px",
     borderRadius: "50%",
-    backgroundColor: "white",
+    backgroundColor: status === "complete" ? "white" : "black",
     marginRight: "6px",
     animation: `${blink} 1.5s infinite`,
   },
