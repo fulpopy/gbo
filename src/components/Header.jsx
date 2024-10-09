@@ -65,7 +65,6 @@ export default function Header() {
   };
 
   const handleCloseUserMenu = () => {
-    handleLogout();
     setAnchorElUser(null);
   };
 
@@ -310,7 +309,13 @@ export default function Header() {
                     </Typography>
                   </MenuItem>
                 )}
-                <MenuItem key="Logout" onClick={handleCloseUserMenu}>
+                <MenuItem
+                  key="Logout"
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    handleLogout();
+                  }}
+                >
                   <Typography textAlign="center">Logout</Typography>
                 </MenuItem>
               </Menu>
