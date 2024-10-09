@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:3001";
+const URL = "https://gbostocks.com";
 export const login = async (user) => {
   try {
     let res = await axios.post(`${URL}/api/auth/signin`, user);
