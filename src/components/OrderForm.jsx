@@ -275,11 +275,13 @@ const OrderForm = ({ open, setOpen, order, setOrder, handleCloseModal }) => {
                   onChange={handleChange}
                 >
                   {karigars &&
-                    karigars.map((karigar) => (
-                      <MenuItem key={karigar?.id} value={karigar?.id}>
-                        {karigar.name}
-                      </MenuItem>
-                    ))}
+                    [...karigars]
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((karigar) => (
+                        <MenuItem key={karigar?.id} value={karigar?.id}>
+                          {karigar.name}
+                        </MenuItem>
+                      ))}
                 </Select>
               </FormControl>
             </Grid>
